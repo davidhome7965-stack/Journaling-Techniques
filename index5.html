@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journaling Techniques — The Complete Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{fontFamily:{'inter':['Inter','sans-serif']}}}}</script>
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;overflow-x:hidden;transition:background .4s ease,color .4s ease}
+
+        :root{
+            --bg-body:#FAFAFA;--bg-card:#FFFFFF;--bg-card-hover:#F9FAFB;
+            --bg-nav:rgba(255,255,255,.75);--bg-nav-scroll:rgba(255,255,255,.92);
+            --bg-mobile-menu:rgba(255,255,255,.96);
+            --text-hero:#111111;--text-primary:#1a1a1a;--text-secondary:#4b5563;
+            --text-muted:#9ca3af;--text-label:#6366f1;
+            --border-card:rgba(0,0,0,.07);--border-card-hover:rgba(0,0,0,.12);
+            --border-nav:rgba(0,0,0,.08);--border-divider:rgba(99,102,241,.15);
+            --border-quote:rgba(99,102,241,.4);
+            --glass-bg:rgba(255,255,255,.7);--glass-border:rgba(0,0,0,.06);
+            --glass-hover-bg:rgba(0,0,0,.025);
+            --glow-1:rgba(99,102,241,.06);--glow-2:rgba(139,92,246,.04);--glow-3:rgba(99,102,241,.03);
+            --shadow-card:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.03);
+            --shadow-card-hover:0 10px 30px rgba(0,0,0,.06);
+            --shadow-nav:0 1px 8px rgba(0,0,0,.06);--noise-opacity:.015;
+            --btn-primary-bg:#111111;--btn-primary-text:#FFF;--btn-primary-hover:#6366f1;
+            --stat-start:#6366f1;--stat-end:#8b5cf6;
+            --footer-border:rgba(0,0,0,.06);
+            --technique-hover:rgba(0,0,0,.03);--technique-border:rgba(0,0,0,.05);
+            --bestfor-bg:rgba(0,0,0,.04);--bestfor-text:#6b7280;
+            --prompt-bg:rgba(99,102,241,.05);--prompt-border:rgba(99,102,241,.1);--prompt-text:#6366f1;
+            --scrollbar-track:#FAFAFA;--scrollbar-thumb:rgba(0,0,0,.1);
+            --c-v-bg:rgba(99,102,241,.08);--c-v-border:rgba(99,102,241,.15);--c-v:#6366f1;
+            --c-e-bg:rgba(16,185,129,.08);--c-e-border:rgba(16,185,129,.15);--c-e:#10b981;
+            --c-a-bg:rgba(245,158,11,.08);--c-a-border:rgba(245,158,11,.15);--c-a:#f59e0b;
+            --c-rose-bg:rgba(244,63,94,.07);--c-rose-border:rgba(244,63,94,.14);--c-rose:#f43f5e;
+            --c-sky-bg:rgba(14,165,233,.07);--c-sky-border:rgba(14,165,233,.14);--c-sky:#0ea5e9;
+            --c-purple-bg:rgba(168,85,247,.07);--c-purple-border:rgba(168,85,247,.14);--c-purple:#a855f7;
+            --c-red-bg:rgba(225,29,72,.07);--c-red-border:rgba(225,29,72,.14);--c-red:#e11d48;
+            --c-teal-bg:rgba(20,184,166,.07);--c-teal-border:rgba(20,184,166,.14);--c-teal:#14b8a6;
+            --c-orange-bg:rgba(249,115,22,.07);--c-orange-border:rgba(249,115,22,.14);--c-orange:#f97316;
+        }
+        [data-theme="dark"]{
+            --bg-body:#050505;--bg-card:rgba(255,255,255,.03);--bg-card-hover:rgba(255,255,255,.05);
+            --bg-nav:rgba(255,255,255,.03);--bg-nav-scroll:rgba(5,5,5,.88);
+            --bg-mobile-menu:rgba(5,5,5,.96);
+            --text-hero:#FFF;--text-primary:#e5e5e5;--text-secondary:rgba(255,255,255,.5);
+            --text-muted:rgba(255,255,255,.4);--text-label:#818cf8;
+            --border-card:rgba(255,255,255,.06);--border-card-hover:rgba(255,255,255,.1);
+            --border-nav:rgba(255,255,255,.06);--border-divider:rgba(99,102,241,.3);
+            --border-quote:rgba(99,102,241,.5);
+            --glass-bg:rgba(255,255,255,.03);--glass-border:rgba(255,255,255,.06);
+            --glass-hover-bg:rgba(255,255,255,.03);
+            --glow-1:rgba(99,102,241,.12);--glow-2:rgba(139,92,246,.08);--glow-3:rgba(99,102,241,.06);
+            --shadow-card:none;--shadow-card-hover:none;
+            --shadow-nav:0 0 20px rgba(0,0,0,.3);--noise-opacity:.03;
+            --btn-primary-bg:#FFF;--btn-primary-text:#000;--btn-primary-hover:#818cf8;
+            --stat-start:#818cf8;--stat-end:#a78bfa;
+            --footer-border:rgba(255,255,255,.05);
+            --technique-hover:rgba(255,255,255,.03);--technique-border:rgba(255,255,255,.05);
+            --bestfor-bg:rgba(255,255,255,.05);--bestfor-text:rgba(255,255,255,.5);
+            --prompt-bg:rgba(99,102,241,.08);--prompt-border:rgba(99,102,241,.15);--prompt-text:#818cf8;
+            --scrollbar-track:#050505;--scrollbar-thumb:rgba(255,255,255,.1);
+            --c-v-bg:rgba(139,92,246,.1);--c-v-border:rgba(139,92,246,.2);--c-v:#a78bfa;
+            --c-e-bg:rgba(16,185,129,.1);--c-e-border:rgba(16,185,129,.2);--c-e:#34d399;
+            --c-a-bg:rgba(245,158,11,.1);--c-a-border:rgba(245,158,11,.2);--c-a:#fbbf24;
+            --c-rose-bg:rgba(244,63,94,.1);--c-rose-border:rgba(244,63,94,.2);--c-rose:#fb7185;
+            --c-sky-bg:rgba(14,165,233,.1);--c-sky-border:rgba(14,165,233,.2);--c-sky:#38bdf8;
+            --c-purple-bg:rgba(168,85,247,.1);--c-purple-border:rgba(168,85,247,.2);--c-purple:#c084fc;
+            --c-red-bg:rgba(225,29,72,.1);--c-red-border:rgba(225,29,72,.2);--c-red:#fb7185;
+            --c-teal-bg:rgba(20,184,166,.1);--c-teal-border:rgba(20,184,166,.2);--c-teal:#2dd4bf;
+            --c-orange-bg:rgba(249,115,22,.1);--c-orange-border:rgba(249,115,22,.2);--c-orange:#fb923c;
+        }
+
+        body{background:var(--bg-body);color:var(--text-primary);font-weight:300;line-height:1.625}
+        .noise-layer{position:fixed;inset:0;z-index:9999;opacity:var(--noise-opacity);pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+        .gradient-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% -20%,var(--glow-1) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 60%,var(--glow-2) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 20% 80%,var(--glow-3) 0%,transparent 50%);animation:gradientShift 20s ease-in-out infinite alternate}
+        @keyframes gradientShift{0%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}100%{opacity:.8;transform:scale(1)}}
+        .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+        .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}.reveal-delay-5{transition-delay:.5s}
+        .glass-panel{background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);box-shadow:var(--shadow-card)}
+        .hero-gradient{background:linear-gradient(to bottom right,var(--text-hero),var(--text-secondary),var(--text-muted));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+        .stat-number{background:linear-gradient(135deg,var(--stat-start),var(--stat-end));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+        .quote-border{border-left:3px solid var(--border-quote)}
+        .line-glow{height:1px;background:linear-gradient(to right,transparent,var(--border-divider),transparent)}
+        .benefit-card{background:var(--bg-card);border:1px solid var(--border-card);box-shadow:var(--shadow-card);transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .5s ease,background .5s ease,box-shadow .5s ease}
+        .benefit-card:hover{transform:translateY(-6px);border-color:var(--border-card-hover);background:var(--bg-card-hover);box-shadow:var(--shadow-card-hover)}
+        .nav-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+        @keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}.float-anim{animation:float 6s ease-in-out infinite}
+        @keyframes scrollBounce{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(8px);opacity:1}}.scroll-indicator{animation:scrollBounce 2s ease-in-out infinite}
+        @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}.pulse-dot{animation:pulse-dot 2s ease-in-out infinite}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:3px}
+        .section-label{font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-label)}
+        .nav-link{color:var(--text-muted);transition:color .2s,background .2s}.nav-link:hover{color:var(--text-primary);background:var(--glass-hover-bg)}
+        .mobile-menu-overlay{background:var(--bg-mobile-menu);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+        .mobile-link{color:var(--text-secondary);transition:color .2s}.mobile-link:hover{color:var(--text-primary)}
+        .text-primary-c{color:var(--text-primary)}.text-secondary-c{color:var(--text-secondary)}.text-muted-c{color:var(--text-muted)}.text-label-c{color:var(--text-label)}
+        .btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-text);transition:all .3s ease}.btn-primary:hover{background:var(--btn-primary-hover);transform:scale(1.05)}
+        .btn-secondary{color:var(--text-muted);border:1px solid var(--border-card);transition:all .3s ease}.btn-secondary:hover{color:var(--text-primary);background:var(--glass-hover-bg)}
+        .explore-link{color:var(--text-label);opacity:.7;transition:opacity .2s}.explore-link:hover{opacity:1}
+        .footer-icon{color:var(--text-muted);transition:color .2s}.footer-icon:hover{color:var(--text-primary)}
+        .accent-glow{background:var(--glow-1);border-radius:50%;filter:blur(60px)}
+        .theme-toggle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-card);background:var(--glass-bg);cursor:pointer;transition:all .3s ease;color:var(--text-secondary);position:relative}
+        .theme-toggle:hover{background:var(--bg-card-hover);border-color:var(--border-card-hover);color:var(--text-primary)}
+        .theme-toggle .icon-sun,.theme-toggle .icon-moon{transition:opacity .3s,transform .3s;position:absolute}
+        [data-theme="light"] .theme-toggle .icon-moon{opacity:1;transform:rotate(0)}[data-theme="light"] .theme-toggle .icon-sun{opacity:0;transform:rotate(-90deg)}
+        [data-theme="dark"] .theme-toggle .icon-sun{opacity:1;transform:rotate(0)}[data-theme="dark"] .theme-toggle .icon-moon{opacity:0;transform:rotate(90deg)}
+        .benefit-item{padding:1.25rem 1.5rem;border-radius:1rem;transition:background .3s}.benefit-item:hover{background:var(--glass-hover-bg)}
+        .dot-v{background:var(--c-v-bg)}.dot-v i{color:var(--c-v)}.dot-e{background:var(--c-e-bg)}.dot-e i{color:var(--c-e)}.dot-a{background:var(--c-a-bg)}.dot-a i{color:var(--c-a)}
+        .icon-v{background:var(--c-v-bg);border:1px solid var(--c-v-border);color:var(--c-v)}
+        .icon-e{background:var(--c-e-bg);border:1px solid var(--c-e-border);color:var(--c-e)}
+        .icon-a{background:var(--c-a-bg);border:1px solid var(--c-a-border);color:var(--c-a)}
+
+        .t-card{background:var(--bg-card);border:1px solid var(--border-card);box-shadow:var(--shadow-card);border-radius:1.25rem;overflow:hidden;position:relative;transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .5s ease,box-shadow .5s ease}
+        .t-card:hover{transform:translateY(-5px);border-color:var(--border-card-hover);box-shadow:var(--shadow-card-hover)}
+        .t-card-accent{position:absolute;top:0;left:0;right:0;height:3px}
+        .t-card-body{padding:1.5rem 1.5rem 1.25rem}
+        .t-card-num{font-size:.65rem;font-weight:600;letter-spacing:.1em;color:var(--text-muted);margin-bottom:.5rem}
+        .t-card-title{font-size:1rem;font-weight:500;color:var(--text-primary);margin-bottom:.6rem;line-height:1.3}
+        .t-card-desc{font-size:.8rem;font-weight:300;color:var(--text-muted);line-height:1.6;margin-bottom:1rem}
+        .t-card-bestfor{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.85rem}
+        .t-card-tag{font-size:.6rem;font-weight:500;padding:.2rem .55rem;border-radius:999px;background:var(--bestfor-bg);color:var(--bestfor-text);letter-spacing:.02em}
+        .t-card-prompts{background:var(--prompt-bg);border:1px solid var(--prompt-border);border-radius:.75rem;padding:.75rem 1rem}
+        .t-card-prompts-title{font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--prompt-text);margin-bottom:.4rem}
+        .t-card-prompt{font-size:.72rem;font-weight:300;color:var(--text-muted);line-height:1.55;padding-left:.75rem;position:relative}
+        .t-card-prompt::before{content:'';position:absolute;left:0;top:.45em;width:4px;height:4px;border-radius:50%;background:var(--prompt-text);opacity:.5}
+        .cat-divider{grid-column:1/-1;padding:.5rem 0}
+        .cat-label{display:inline-flex;align-items:center;gap:.5rem;font-size:.6rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-label)}
+        .cat-label-line{flex:1;height:1px;background:var(--technique-border)}
+    </style>
+</head>
+<body class="font-inter">
+<div class="noise-layer"></div>
+<div class="gradient-bg"></div>
+
+<!-- NAV -->
+<nav id="mainNav" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 nav-blur rounded-full px-2 py-1.5 flex items-center gap-1 transition-all duration-300" style="background:var(--bg-nav);border:1px solid var(--border-nav);box-shadow:var(--shadow-nav)">
+    <a href="#hero" class="flex items-center gap-2 px-4 py-2 rounded-full" style="transition:background .2s" onmouseover="this.style.background='var(--glass-hover-bg)'" onmouseout="this.style.background='transparent'">
+        <div class="w-5 h-5 rounded-full icon-v flex items-center justify-center"><div class="w-1.5 h-1.5 rounded-full" style="background:var(--c-v)"></div></div>
+        <span class="text-sm font-medium text-primary-c hidden sm:inline">Journaling</span>
+    </a>
+    <div class="hidden lg:flex items-center gap-0.5">
+        <a href="#what-is" class="nav-link px-3 py-2 text-xs font-medium rounded-full">What is</a>
+        <a href="#benefits" class="nav-link px-3 py-2 text-xs font-medium rounded-full">Benefits</a>
+        <a href="#stats" class="nav-link px-3 py-2 text-xs font-medium rounded-full">Research</a>
+        <a href="#mental" class="nav-link px-3 py-2 text-xs font-medium rounded-full">Mental</a>
+        <a href="#types" class="nav-link px-3 py-2 text-xs font-medium rounded-full">Techniques</a>
+    </div>
+    <button id="themeToggle" class="theme-toggle ml-1" aria-label="Toggle theme">
+        <span class="icon-sun"><i data-lucide="sun" class="w-4 h-4"></i></span>
+        <span class="icon-moon"><i data-lucide="moon" class="w-4 h-4"></i></span>
+    </button>
+    <button id="mobileMenuBtn" class="lg:hidden px-3 py-2 nav-link rounded-full"><i data-lucide="menu" class="w-4 h-4"></i></button>
+</nav>
+<div id="mobileMenu" class="fixed inset-0 z-40 mobile-menu-overlay hidden flex-col items-center justify-center gap-6">
+    <button id="mobileMenuClose" class="absolute top-8 right-8 nav-link"><i data-lucide="x" class="w-6 h-6"></i></button>
+    <a href="#what-is" class="mobile-link text-lg font-light">What is Journaling</a>
+    <a href="#benefits" class="mobile-link text-lg font-light">Benefits</a>
+    <a href="#stats" class="mobile-link text-lg font-light">Research</a>
+    <a href="#mental" class="mobile-link text-lg font-light">Mental Health</a>
+    <a href="#types" class="mobile-link text-lg font-light">48 Techniques</a>
+</div>
+
+<!-- HERO -->
+<section id="hero" class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20">
+    <div class="relative z-10 max-w-5xl mx-auto text-center">
+        <div class="reveal flex items-center justify-center gap-2 mb-8"><span class="w-1.5 h-1.5 rounded-full pulse-dot" style="background:var(--c-v)"></span><span class="section-label">The Complete Guide — Updated 2026</span></div>
+        <h1 class="reveal reveal-delay-1 hero-gradient text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.9] mb-8">Journaling<br>Techniques</h1>
+        <p class="reveal reveal-delay-2 text-base sm:text-lg md:text-xl font-light text-secondary-c max-w-2xl mx-auto mb-6 leading-relaxed">Every Method, Style, and Practice That Actually Works</p>
+        <p class="reveal reveal-delay-3 text-sm sm:text-base font-light text-muted-c max-w-xl mx-auto mb-12 leading-relaxed">You've probably started a journal at least once. Maybe you wrote a few entries, felt good about it — and then quietly stopped somewhere around page four. The blank page won.</p>
+        <div class="reveal reveal-delay-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#what-is" class="btn-primary group inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium">Start Reading <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i></a>
+            <a href="#types" class="btn-secondary inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium">48 Techniques</a>
+        </div>
+    </div>
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 scroll-indicator"><i data-lucide="chevron-down" class="w-5 h-5 text-muted-c"></i></div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+<!-- THE PROBLEM -->
+<section class="relative py-24 md:py-32 px-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="reveal glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-60 h-60 accent-glow pointer-events-none"></div>
+            <div class="relative z-10">
+                <span class="section-label mb-6 block">The Real Problem</span>
+                <p class="text-lg md:text-xl font-light text-secondary-c leading-relaxed mb-6">Here is the thing most people never realize: the reason journaling didn't stick was <span class="text-primary-c font-medium">not a lack of discipline</span>. It was a lack of the <span class="text-label-c font-medium">right technique</span>.</p>
+                <p class="text-base font-light text-muted-c leading-relaxed">Whether you want to manage anxiety, boost productivity, unlock creativity, process grief, or simply understand yourself better — there is a journaling technique designed for exactly that.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHAT IS — 4 CARDS -->
+<section id="what-is" class="relative py-24 md:py-32 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="reveal text-center mb-16"><span class="section-label mb-4 block">Understanding</span><h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95]">What Is Journaling & Why Does It Work?</h2></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="reveal reveal-delay-1 benefit-card rounded-2xl p-7"><div class="w-10 h-10 rounded-xl icon-v flex items-center justify-center mb-5"><i data-lucide="feather" class="w-5 h-5"></i></div><h3 class="text-base font-medium text-primary-c mb-3">The Practice</h3><p class="text-sm font-light text-muted-c leading-relaxed">Writing down thoughts, feelings, experiences on a regular basis — but that barely scratches the surface of what it does inside your brain.</p></div>
+            <div class="reveal reveal-delay-2 benefit-card rounded-2xl p-7"><div class="w-10 h-10 rounded-xl icon-v flex items-center justify-center mb-5"><i data-lucide="brain" class="w-5 h-5"></i></div><h3 class="text-base font-medium text-primary-c mb-3">The Neuroscience</h3><p class="text-sm font-light text-muted-c leading-relaxed">Expressive writing activates the <span class="text-secondary-c">prefrontal cortex</span> while reducing <span class="text-secondary-c">amygdala</span> activity — calms anxiety and activates rational thinking.</p></div>
+            <div class="reveal reveal-delay-3 benefit-card rounded-2xl p-7"><div class="w-10 h-10 rounded-xl icon-v flex items-center justify-center mb-5"><i data-lucide="microscope" class="w-5 h-5"></i></div><h3 class="text-base font-medium text-primary-c mb-3">Pennebaker's Research</h3><p class="text-sm font-light text-muted-c leading-relaxed">Decades of study at UT Austin showed writing about difficult experiences helps the brain organize chaotic thoughts — replicated hundreds of times.</p></div>
+            <div class="reveal reveal-delay-4 benefit-card rounded-2xl p-7"><div class="w-10 h-10 rounded-xl icon-v flex items-center justify-center mb-5"><i data-lucide="settings" class="w-5 h-5"></i></div><h3 class="text-base font-medium text-primary-c mb-3">The Mechanism</h3><p class="text-sm font-light text-muted-c leading-relaxed">Structured approaches to <span class="text-secondary-c">changing how your brain processes</span> emotions, problems, and experiences — not just ways to fill a page.</p></div>
+        </div>
+        <div class="reveal mt-16 quote-border glass-panel rounded-r-2xl pl-8 pr-8 py-8 md:pl-12 md:pr-12 md:py-10">
+            <p class="text-base md:text-lg font-light text-secondary-c leading-relaxed italic mb-4">"Writing about emotional experiences helps process traumatic events by organizing chaotic thoughts and releasing pent-up emotions, leading to improved mental clarity and resilience."</p>
+            <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full icon-v flex items-center justify-center"><i data-lucide="user" class="w-4 h-4"></i></div><div><p class="text-sm font-medium text-primary-c">Dr. James Pennebaker</p><p class="text-xs text-muted-c">University of Texas at Austin</p></div></div>
+        </div>
+    </div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+<!-- BENEFITS -->
+<section id="benefits" class="relative py-24 md:py-32 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="reveal text-center mb-16"><span class="section-label mb-4 block">Evidence-Based</span><h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95] mb-6">The Benefits of<br>Journaling</h2><p class="text-base font-light text-muted-c max-w-xl mx-auto">Findings from peer-reviewed clinical trials.</p></div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <a href="#mental" class="reveal reveal-delay-1 group benefit-card rounded-2xl p-8 block"><div class="w-12 h-12 rounded-2xl icon-v flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500"><i data-lucide="heart-pulse" class="w-6 h-6"></i></div><h3 class="text-lg font-medium text-primary-c mb-3">Mental & Emotional</h3><p class="text-sm font-light text-muted-c leading-relaxed">Reduced anxiety, fewer depressive symptoms, better emotional regulation, broken rumination cycles.</p><div class="mt-6 flex items-center gap-1.5 text-xs explore-link">Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i></div></a>
+            <a href="#physical" class="reveal reveal-delay-2 group benefit-card rounded-2xl p-8 block"><div class="w-12 h-12 rounded-2xl icon-e flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500"><i data-lucide="activity" class="w-6 h-6"></i></div><h3 class="text-lg font-medium text-primary-c mb-3">Physical Health</h3><p class="text-sm font-light text-muted-c leading-relaxed">Faster wound healing, fewer sick days, lower blood pressure, better sleep, reduced chronic pain.</p><div class="mt-6 flex items-center gap-1.5 text-xs explore-link">Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i></div></a>
+            <a href="#cognitive" class="reveal reveal-delay-3 group benefit-card rounded-2xl p-8 block"><div class="w-12 h-12 rounded-2xl icon-a flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500"><i data-lucide="lightbulb" class="w-6 h-6"></i></div><h3 class="text-lg font-medium text-primary-c mb-3">Cognitive & Productivity</h3><p class="text-sm font-light text-muted-c leading-relaxed">Improved memory, greater clarity, better decision-making, unlocked creative thinking.</p><div class="mt-6 flex items-center gap-1.5 text-xs explore-link">Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i></div></a>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section id="stats" class="relative py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="reveal text-center mb-14"><span class="section-label mb-4 block">By The Numbers</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight text-primary-c">What Research Actually Shows</h2></div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div class="reveal reveal-delay-1 benefit-card rounded-2xl p-6 md:p-8 text-center"><div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="45" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light text-muted-c leading-snug">Reduction in anxiety & depression</p></div>
+            <div class="reveal reveal-delay-2 benefit-card rounded-2xl p-6 md:p-8 text-center"><div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="56.3" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light text-muted-c leading-snug">Better mental health in one month</p></div>
+            <div class="reveal reveal-delay-3 benefit-card rounded-2xl p-6 md:p-8 text-center"><div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="23" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light text-muted-c leading-snug">Drop in cortisol levels</p></div>
+            <div class="reveal reveal-delay-4 benefit-card rounded-2xl p-6 md:p-8 text-center"><div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="9" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light text-muted-c leading-snug">Anxiety reduction (2022 review)</p></div>
+        </div>
+    </div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+<!-- MENTAL -->
+<section id="mental" class="relative py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+            <div class="lg:col-span-4"><div class="reveal lg:sticky lg:top-32"><div class="w-10 h-10 rounded-xl icon-v flex items-center justify-center mb-6"><i data-lucide="heart-pulse" class="w-5 h-5"></i></div><span class="section-label mb-4 block">Category 01</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight text-primary-c leading-tight mb-4">Mental & Emotional</h2></div></div>
+            <div class="lg:col-span-8 space-y-2">
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-v flex items-center justify-center flex-shrink-0"><i data-lucide="trending-down" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">20–45% Symptom Reduction</h4><p class="text-sm font-light text-muted-c leading-relaxed">Across multiple clinical studies of regular journalers.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-v flex items-center justify-center flex-shrink-0"><i data-lucide="shield-check" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">As Effective as CBT</h4><p class="text-sm font-light text-muted-c leading-relaxed">Landmark 2006 study — as effective as cognitive-behavioral therapy in reducing depression risk.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-v flex items-center justify-center flex-shrink-0"><i data-lucide="sparkles" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">56.3% Improvement in One Month</h4><p class="text-sm font-light text-muted-c leading-relaxed">Positive affect journaling trials versus 31.3% in control groups.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-v flex items-center justify-center flex-shrink-0"><i data-lucide="refresh-cw" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Breaks Rumination Cycles</h4><p class="text-sm font-light text-muted-c leading-relaxed">Externalizes thoughts — from trapped feeling to words on a page you can analyze.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-v flex items-center justify-center flex-shrink-0"><i data-lucide="scale" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Emotional Regulation</h4><p class="text-sm font-light text-muted-c leading-relaxed">2025 analysis confirmed consistent journaling improves regulation significantly.</p></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+<!-- PHYSICAL -->
+<section id="physical" class="relative py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+            <div class="lg:col-span-4"><div class="reveal lg:sticky lg:top-32"><div class="w-10 h-10 rounded-xl icon-e flex items-center justify-center mb-6"><i data-lucide="activity" class="w-5 h-5"></i></div><span class="section-label mb-4 block">Category 02</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight text-primary-c leading-tight mb-4">Physical Health</h2></div></div>
+            <div class="lg:col-span-8 space-y-2">
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-e flex items-center justify-center flex-shrink-0"><i data-lucide="bandage" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Faster Wound Healing</h4><p class="text-sm font-light text-muted-c leading-relaxed">New Zealand study — wrote about feelings before biopsy healed significantly faster.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-e flex items-center justify-center flex-shrink-0"><i data-lucide="calendar-check" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Fewer Sick Days</h4><p class="text-sm font-light text-muted-c leading-relaxed">Journaling about deepest thoughts reduces sick days — immune system gets stronger.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-e flex items-center justify-center flex-shrink-0"><i data-lucide="gauge" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Lower Blood Pressure</h4><p class="text-sm font-light text-muted-c leading-relaxed">Cortisol can drop up to 23% in regular journalers.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-e flex items-center justify-center flex-shrink-0"><i data-lucide="moon" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Better Sleep</h4><p class="text-sm font-light text-muted-c leading-relaxed">Gratitude journaling before bed clears the mind, improves sleep quality.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-e flex items-center justify-center flex-shrink-0"><i data-lucide="heart" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Reduced Chronic Pain</h4><p class="text-sm font-light text-muted-c leading-relaxed">Fewer days where pain inhibited usual activities.</p></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+<!-- COGNITIVE -->
+<section id="cognitive" class="relative py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+            <div class="lg:col-span-4"><div class="reveal lg:sticky lg:top-32"><div class="w-10 h-10 rounded-xl icon-a flex items-center justify-center mb-6"><i data-lucide="lightbulb" class="w-5 h-5"></i></div><span class="section-label mb-4 block">Category 03</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight text-primary-c leading-tight mb-4">Cognitive & Productivity</h2></div></div>
+            <div class="lg:col-span-8 space-y-2">
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-a flex items-center justify-center flex-shrink-0"><i data-lucide="database" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Improved Memory</h4><p class="text-sm font-light text-muted-c leading-relaxed">Writing consolidates information more effectively than thinking alone.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-a flex items-center justify-center flex-shrink-0"><i data-lucide="eye" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Greater Clarity</h4><p class="text-sm font-light text-muted-c leading-relaxed">Writing forces you to articulate what you actually think — the fog lifts.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-a flex items-center justify-center flex-shrink-0"><i data-lucide="git-branch" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Better Decision-Making</h4><p class="text-sm font-light text-muted-c leading-relaxed">Examine assumptions, consider perspectives, identify behavior patterns.</p></div></div></div>
+                <div class="reveal benefit-item rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full dot-a flex items-center justify-center flex-shrink-0"><i data-lucide="flame" class="w-3 h-3"></i></div><div><h4 class="text-sm font-medium text-primary-c mb-2">Increased Creativity</h4><p class="text-sm font-light text-muted-c leading-relaxed">Stream of consciousness bypasses your inner critic to unlock original thinking.</p></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+
+<!-- ============================================================ -->
+<!-- ALL 48 TECHNIQUES -->
+<!-- ============================================================ -->
+<section id="types" class="relative py-24 md:py-32 px-6">
+<div class="max-w-6xl mx-auto">
+    <div class="reveal text-center mb-6">
+        <span class="section-label mb-4 block">The Complete List</span>
+        <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95] mb-6">Types of Journaling Techniques</h2>
+        <p class="text-base font-light text-muted-c max-w-2xl mx-auto leading-relaxed">48 researched, practiced, and effective techniques — each explained with what it is, how to do it, and who it works best for.</p>
+    </div>
+    <div class="reveal flex justify-center mb-14">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium" style="background:var(--c-v-bg);color:var(--c-v);border:1px solid var(--c-v-border)"><i data-lucide="layers" class="w-3.5 h-3.5"></i> 48 Techniques — 7 Parts</div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+    <!-- ===== PART 1 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 1 — Self-Reflection & Emotional Processing</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">1–7</span></div></div>
+
+    <!-- 1-7 cards condensed for space — same structure as before -->
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">01</div><h3 class="t-card-title">Gratitude Journaling</h3><p class="t-card-desc">Write 3-5 specific things you're grateful for. Specificity and genuine feeling produce the strongest results. Once or twice a week beats rushed daily entries.</p><div class="t-card-bestfor"><span class="t-card-tag">Anxiety</span><span class="t-card-tag">Depression</span><span class="t-card-tag">Optimism</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">02</div><h3 class="t-card-title">Morning Pages</h3><p class="t-card-desc">Three pages of longhand, stream-of-consciousness writing every morning before anything else. Empty your mental inbox so what remains is clearer and more creative.</p><div class="t-card-bestfor"><span class="t-card-tag">Writers</span><span class="t-card-tag">Artists</span><span class="t-card-tag">Overthinkers</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">03</div><h3 class="t-card-title">Bullet Journaling</h3><p class="t-card-desc">Rapid-logging system using bullets, dashes, circles for tasks, notes, events. Build monthly logs, weekly spreads, habit trackers — every journal is unique.</p><div class="t-card-bestfor"><span class="t-card-tag">Productivity</span><span class="t-card-tag">ADHD</span><span class="t-card-tag">Habit Building</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">04</div><h3 class="t-card-title">Stream of Consciousness</h3><p class="t-card-desc">Write exactly what's in your mind — no editing, judging, or pausing. The pen never stops. Surfaces hidden thoughts you didn't know you were thinking.</p><div class="t-card-bestfor"><span class="t-card-tag">Emotion Processing</span><span class="t-card-tag">Creative Blocks</span><span class="t-card-tag">Self-Discovery</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">05</div><h3 class="t-card-title">Expressive Writing</h3><p class="t-card-desc">Most scientifically backed. 15-20 minutes for 3-4 days about deepest feelings around a difficult experience. Fewer doctor visits, improved immunity, faster healing.</p><div class="t-card-bestfor"><span class="t-card-tag">Trauma</span><span class="t-card-tag">Grief</span><span class="t-card-tag">PTSD</span></div><div class="t-card-prompts"><div class="t-card-prompts-title">Important</div><p class="t-card-prompt">Can feel uncomfortable initially but better in the days after. Best alongside professional support for severe trauma.</p></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">06</div><h3 class="t-card-title">Dream Journaling</h3><p class="t-card-desc">Record dreams immediately upon waking — within five minutes most fade. Keep notebook by your bed. Patterns reveal subconscious preoccupations and rich creative material.</p><div class="t-card-bestfor"><span class="t-card-tag">Creatives</span><span class="t-card-tag">Subconscious</span><span class="t-card-tag">Nightmares</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-v),transparent)"></div><div class="t-card-body"><div class="t-card-num">07</div><h3 class="t-card-title">Shadow Work Journaling</h3><p class="t-card-desc">Based on Carl Jung — explore repressed, denied, or hidden parts of yourself. Requires uncomfortable honesty. Goal is integration, not self-punishment. Greater self-compassion and healthier relationships result.</p><div class="t-card-bestfor"><span class="t-card-tag">Deep Self-Discovery</span><span class="t-card-tag">Relationships</span><span class="t-card-tag">Limiting Beliefs</span></div></div></div>
+
+    <!-- Part 1 continued divider -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Growth & Goal-Oriented</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">8–14</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">08</div><h3 class="t-card-title">Manifestation & Vision Journaling</h3><p class="t-card-desc">Write about goals as though already achieved. People with written goals are 42% more likely to achieve them. Combine with drawings, cutouts, or color coding for vividness.</p><div class="t-card-bestfor"><span class="t-card-tag">Goal Setting</span><span class="t-card-tag">Career</span><span class="t-card-tag">Self-Confidence</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">09</div><h3 class="t-card-title">Reflective Journaling</h3><p class="t-card-desc">Review what happened and draw insights. Converts raw experience into genuine understanding — used extensively in education and professional development to accelerate learning.</p><div class="t-card-bestfor"><span class="t-card-tag">Professionals</span><span class="t-card-tag">Students</span><span class="t-card-tag">Life Transitions</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">10</div><h3 class="t-card-title">The Five Whys Technique</h3><p class="t-card-desc">Ask "Why?" five times. First two produce surface answers. By the fourth and fifth, you arrive at core fears, unmet needs, or hidden beliefs you hadn't consciously acknowledged.</p><div class="t-card-bestfor"><span class="t-card-tag">Problem-Solving</span><span class="t-card-tag">Anxiety</span><span class="t-card-tag">Root Cause</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">11</div><h3 class="t-card-title">Art Journaling</h3><p class="t-card-desc">Combine writing with visual expression — drawing, painting, collage. Expresses what words cannot. No artistic skill needed — the most powerful pages are often the messiest, most unplanned ones.</p><div class="t-card-bestfor"><span class="t-card-tag">Visual Thinkers</span><span class="t-card-tag">Writing-Averse</span><span class="t-card-tag">Emotional Processing</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">12</div><h3 class="t-card-title">Prompted Journaling</h3><p class="t-card-desc">Respond to specific questions instead of facing a blank page. From "What's on my mind?" to deep exploratory prompts. The quality of the prompt directly influences the quality of insight.</p><div class="t-card-bestfor"><span class="t-card-tag">Beginners</span><span class="t-card-tag">Feeling Stuck</span><span class="t-card-tag">Specific Exploration</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">13</div><h3 class="t-card-title">Unsent Letter Writing</h3><p class="t-card-desc">Write to someone you'll never send it to — someone who hurt you, your younger self, your future self. Complete freedom to be honest. One of the most emotionally powerful and underused techniques.</p><div class="t-card-bestfor"><span class="t-card-tag">Grief</span><span class="t-card-tag">Anger</span><span class="t-card-tag">Forgiveness</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-e),transparent)"></div><div class="t-card-body"><div class="t-card-num">14</div><h3 class="t-card-title">Daily Review Journaling</h3><p class="t-card-desc">5-15 minute end-of-day practice: one thing well, one challenge, one lesson, one intention for tomorrow. From Benjamin Franklin to Oprah — compounding returns on minimal time investment.</p><div class="t-card-bestfor"><span class="t-card-tag">Busy People</span><span class="t-card-tag">Goal Trackers</span><span class="t-card-tag">Sustainability</span></div></div></div>
+
+    <div class="cat-divider reveal"><div class="cat-label"><span>Lifestyle & Specialized</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">15–21</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">15</div><h3 class="t-card-title">Nature Journaling</h3><p class="t-card-desc">Record detailed observations of the natural world — birds, light, seasons, bark texture. Close attention in nature is mindfulness that reduces anxiety and restores mental energy.</p><div class="t-card-bestfor"><span class="t-card-tag">Stress Relief</span><span class="t-card-tag">Mindfulness</span><span class="t-card-tag">Screen Fatigue</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">16</div><h3 class="t-card-title">Travel Journaling</h3><p class="t-card-desc">Preserves not what you saw but how you felt — sensory details that fade within months stay alive indefinitely. Many incorporate physical mementos alongside written entries.</p><div class="t-card-bestfor"><span class="t-card-tag">Travelers</span><span class="t-card-tag">Memory</span><span class="t-card-tag">Self-Discovery</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">17</div><h3 class="t-card-title">Food & Nutrition Journaling</h3><p class="t-card-desc">Most research-backed behavioral change tool — those who track what they eat lose significantly more weight. Beyond calories: explore emotional relationship with eating patterns.</p><div class="t-card-bestfor"><span class="t-card-tag">Health Goals</span><span class="t-card-tag">Mindful Eating</span><span class="t-card-tag">Emotional Patterns</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">18</div><h3 class="t-card-title">Fitness & Workout Journaling</h3><p class="t-card-desc">Track workouts, energy, recovery, and mental state. Creates the data to train intelligently. Flipping back through entries showing concrete progress is the best antidote to plateau frustration.</p><div class="t-card-bestfor"><span class="t-card-tag">Athletes</span><span class="t-card-tag">Fitness Goals</span><span class="t-card-tag">Injury Recovery</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">19</div><h3 class="t-card-title">Financial Journaling</h3><p class="t-card-desc">Track money and examine beliefs about spending. Most financial problems are psychology problems, not math problems. Spending is tied to emotions: stress, comfort, fear.</p><div class="t-card-bestfor"><span class="t-card-tag">Debt Recovery</span><span class="t-card-tag">Saving</span><span class="t-card-tag">Money Psychology</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">20</div><h3 class="t-card-title">Relationship Journaling</h3><p class="t-card-desc">Not venting about others — understanding your own role, reactions, and patterns. Often reveals the common thread is an unmet need you bring to each relationship.</p><div class="t-card-bestfor"><span class="t-card-tag">Communication</span><span class="t-card-tag">Breakup Healing</span><span class="t-card-tag">Attachment Patterns</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-a),transparent)"></div><div class="t-card-body"><div class="t-card-num">21</div><h3 class="t-card-title">Couples Journaling</h3><p class="t-card-desc">Partners write to each other in a shared journal. Writing gives time to think, removes heat of confrontation, creates a record of appreciation and intentions to revisit.</p><div class="t-card-bestfor"><span class="t-card-tag">Couples</span><span class="t-card-tag">Long-Distance</span><span class="t-card-tag">Difficult Conversations</span></div></div></div>
+
+
+    <!-- ===== PART 2 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 2 — Life Stage & Identity</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">22–26</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-rose),transparent)"></div><div class="t-card-body"><div class="t-card-num">22</div><h3 class="t-card-title">Parenting & Family Journal</h3><p class="t-card-desc">Captures first words, funny observations, milestones that memory cannot hold over decades. Also a reflective space for the parent — process challenges, examine how your own childhood shapes your parenting style.</p><div class="t-card-bestfor"><span class="t-card-tag">New Parents</span><span class="t-card-tag">Memory Preservation</span><span class="t-card-tag">Parental Healing</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-rose),transparent)"></div><div class="t-card-body"><div class="t-card-num">23</div><h3 class="t-card-title">Pregnancy & Motherhood Journaling</h3><p class="t-card-desc">Weekly entries documenting physical changes, emotional states, fears, hopes. Pregnancy brings up identity questions, relationship reflections, and values — all benefit from the reflective space journaling provides.</p><div class="t-card-bestfor"><span class="t-card-tag">Pregnancy</span><span class="t-card-tag">Postpartum</span><span class="t-card-tag">Fertility</span><span class="t-card-tag">Adoption</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-rose),transparent)"></div><div class="t-card-body"><div class="t-card-num">24</div><h3 class="t-card-title">Legacy & Memory Journaling</h3><p class="t-card-desc">Written not for yourself but for those who come after — your life story, values, beliefs, lessons you want to pass on. The specific texture of a life disappears when undocumented. An act of generosity toward the future.</p><div class="t-card-bestfor"><span class="t-card-tag">Family History</span><span class="t-card-tag">Grief Processing</span><span class="t-card-tag">Life Transitions</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-rose),transparent)"></div><div class="t-card-body"><div class="t-card-num">25</div><h3 class="t-card-title">Recovery & Sobriety Journaling</h3><p class="t-card-desc">Core tool in twelve-step and therapeutic recovery frameworks. Track milestones, explore triggers and cravings, process underlying emotional pain, document gratitude for the life sobriety makes possible.</p><div class="t-card-bestfor"><span class="t-card-tag">Addiction Recovery</span><span class="t-card-tag">Eating Disorders</span><span class="t-card-tag">Compulsive Behavior</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-rose),transparent)"></div><div class="t-card-body"><div class="t-card-num">26</div><h3 class="t-card-title">Inner Child Journaling</h3><p class="t-card-desc">Write to, from, or about your younger self who experienced formative events. Tell that child what you wish someone had said. Switch to a spontaneous voice to access feelings your adult mind suppresses.</p><div class="t-card-bestfor"><span class="t-card-tag">Deep Healing</span><span class="t-card-tag">Childhood Trauma</span><span class="t-card-tag">Disproportionate Reactions</span></div></div></div>
+
+
+    <!-- ===== PART 3 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 3 — Professional & Academic</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">27–30</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-sky),transparent)"></div><div class="t-card-body"><div class="t-card-num">27</div><h3 class="t-card-title">Career & Professional Journaling</h3><p class="t-card-desc">Reflect on goals, progress, challenges, and evolving sense of what you want from your career. Especially powerful during transitions — writing through questions produces clarity no pros-and-cons list can replicate.</p><div class="t-card-bestfor"><span class="t-card-tag">Career Transition</span><span class="t-card-tag">Leadership</span><span class="t-card-tag">Workplace Challenges</span></div><div class="t-card-prompts"><div class="t-card-prompts-title">Sample Prompts</div><p class="t-card-prompt">What kind of leader do I want to be remembered as?</p><p class="t-card-prompt" style="margin-top:.35rem">What am I tolerating at work that I've convinced myself is acceptable?</p></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-sky),transparent)"></div><div class="t-card-body"><div class="t-card-num">28</div><h3 class="t-card-title">Academic & Student Journaling</h3><p class="t-card-desc">Writing about what you've learned — explaining in your own words, connecting to prior knowledge, noting what confuses you — produces dramatically better retention. Used in medical, law, and teacher training programs.</p><div class="t-card-bestfor"><span class="t-card-tag">Students</span><span class="t-card-tag">Professionals in Training</span><span class="t-card-tag">New Skills</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-sky),transparent)"></div><div class="t-card-body"><div class="t-card-num">29</div><h3 class="t-card-title">Entrepreneur & Business Journal</h3><p class="t-card-desc">Thinking partner, decision log, creative space, and emotional outlet in one. Captures ideas before they disappear, documents reasoning behind major decisions, processes isolation and self-doubt that entrepreneurship produces.</p><div class="t-card-bestfor"><span class="t-card-tag">Founders</span><span class="t-card-tag">Freelancers</span><span class="t-card-tag">Side Hustlers</span><span class="t-card-tag">Creative Professionals</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-sky),transparent)"></div><div class="t-card-body"><div class="t-card-num">30</div><h3 class="t-card-title">Project Journaling</h3><p class="t-card-desc">Dedicated journal for a specific project — brainstorming, research notes, decision documentation, reflections on what's working. Writers develop characters, designers document concept evolution, scientists note hypotheses.</p><div class="t-card-bestfor"><span class="t-card-tag">Writers</span><span class="t-card-tag">Designers</span><span class="t-card-tag">Researchers</span><span class="t-card-tag">Builders</span></div></div></div>
+
+
+    <!-- ===== PART 4 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 4 — Spiritual & Philosophical</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">31–34</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-purple),transparent)"></div><div class="t-card-body"><div class="t-card-num">31</div><h3 class="t-card-title">Prayer & Spiritual Journaling</h3><p class="t-card-desc">One of the oldest journaling practices — writing prayers, meditations, spiritual reflections across traditions. Not limited to any religion. Creates space for the dimension of meaning, purpose, and inner experience to be honored and explored.</p><div class="t-card-bestfor"><span class="t-card-tag">Spiritual Practice</span><span class="t-card-tag">Faith Exploration</span><span class="t-card-tag">Religious Trauma Recovery</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-purple),transparent)"></div><div class="t-card-body"><div class="t-card-num">32</div><h3 class="t-card-title">Bible & Scripture Journaling</h3><p class="t-card-desc">Writing alongside, in response to, or in dialogue with sacred texts. Transforms passive reading into active, personal dialogue — what the text clarifies, challenges, raises, and how it speaks to your current life. Extends to any sacred tradition.</p><div class="t-card-bestfor"><span class="t-card-tag">People of Faith</span><span class="t-card-tag">Deeper Engagement</span><span class="t-card-tag">Experiential Practice</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-purple),transparent)"></div><div class="t-card-body"><div class="t-card-num">33</div><h3 class="t-card-title">Stoic Journaling</h3><p class="t-card-desc">Drawing from Marcus Aurelius, Seneca, Epictetus. Morning preparation, evening review, negative visualization, dichotomy of control, memento mori. Builds a philosophical muscle that strengthens under pressure — applied philosophy in writing.</p><div class="t-card-bestfor"><span class="t-card-tag">Stoic Philosophy</span><span class="t-card-tag">Anxiety</span><span class="t-card-tag">Leadership</span><span class="t-card-tag">Values Alignment</span></div><div class="t-card-prompts"><div class="t-card-prompts-title">Classic Prompt</div><p class="t-card-prompt">Write everything that bothered you today. For each: was it within your control? If not — what would acceptance look like? If yes — what would virtue look like?</p></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-purple),transparent)"></div><div class="t-card-body"><div class="t-card-num">34</div><h3 class="t-card-title">Tarot Journaling</h3><p class="t-card-desc">Uses tarot imagery and symbolism as prompts for self-examination. Draw cards and write about what the imagery evokes. The 78-card deck is a symbolic vocabulary of human experience — archetypes of transformation, loss, joy, power, wisdom. Works with or without supernatural belief.</p><div class="t-card-bestfor"><span class="t-card-tag">Creative Thinkers</span><span class="t-card-tag">Symbolic Exploration</span><span class="t-card-tag">Unusual Prompts</span></div></div></div>
+
+
+    <!-- ===== PART 5 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 5 — Therapeutic & Healing</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">35–38</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-red),transparent)"></div><div class="t-card-body"><div class="t-card-num">35</div><h3 class="t-card-title">CBT Journaling</h3><p class="t-card-desc">Central to Cognitive Behavioral Therapy. Identify negative automatic thoughts, examine evidence for and against, replace distorted thinking with balanced perspectives. Over time, trains the mind to catch distorted thoughts without writing them down.</p><div class="t-card-bestfor"><span class="t-card-tag">Anxiety</span><span class="t-card-tag">Depression</span><span class="t-card-tag">Perfectionism</span><span class="t-card-tag">Low Self-Esteem</span></div><div class="t-card-prompts"><div class="t-card-prompts-title">Entry Structure</div><p class="t-card-prompt">Situation → Automatic thought → Emotion (0-100%) → Evidence for → Evidence against → Balanced thought → Revised emotion (0-100%).</p></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-red),transparent)"></div><div class="t-card-body"><div class="t-card-num">36</div><h3 class="t-card-title">DBT Journaling</h3><p class="t-card-desc">Developed by Marsha Linehan for intense emotional dysregulation. Supports four core DBT skills: mindfulness, distress tolerance, emotional regulation, interpersonal effectiveness. The DBT diary card is essentially a structured daily journal entry.</p><div class="t-card-bestfor"><span class="t-card-tag">Emotional Sensitivity</span><span class="t-card-tag">Self-Harm Urges</span><span class="t-card-tag">BPD</span><span class="t-card-tag">Overwhelming Emotions</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-red),transparent)"></div><div class="t-card-body"><div class="t-card-num">37</div><h3 class="t-card-title">Healing Journal</h3><p class="t-card-desc">Oriented toward recovery from physical illness, chronic pain, or psychological aftermath of trauma and loss. Track symptoms and treatment responses, or tell your story at your own pace. Often incorporates gratitude, expressive writing, and letter techniques.</p><div class="t-card-bestfor"><span class="t-card-tag">Chronic Illness</span><span class="t-card-tag">Trauma Recovery</span><span class="t-card-tag">Grief</span><span class="t-card-tag">Life Disruption</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-red),transparent)"></div><div class="t-card-body"><div class="t-card-num">38</div><h3 class="t-card-title">Mindfulness Journaling</h3><p class="t-card-desc">Bridges mindfulness with reflective writing. Focus on what's happening right now — body sensations, senses, surroundings, current emotional state. Observe thoughts as weather passing through a sky. Writing slows you down enough to actually notice what you're experiencing.</p><div class="t-card-bestfor"><span class="t-card-tag">Being Present</span><span class="t-card-tag">Rumination</span><span class="t-card-tag">Meditation Integration</span></div></div></div>
+
+
+    <!-- ===== PART 6 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 6 — Creative & Experimental</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">39–44</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-teal),transparent)"></div><div class="t-card-body"><div class="t-card-num">39</div><h3 class="t-card-title">Photo Journaling</h3><p class="t-card-desc">Select images intentionally and write about what you captured, why, what it means. Camera becomes an extension of journaling — documenting visual experience with the same intentionality words bring to interior experience. Simplified version: one meaningful photo per day with a sentence.</p><div class="t-card-bestfor"><span class="t-card-tag">Visual Thinkers</span><span class="t-card-tag">Photographers</span><span class="t-card-tag">Writing-Averse</span><span class="t-card-tag">Creative Mindfulness</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-teal),transparent)"></div><div class="t-card-body"><div class="t-card-num">40</div><h3 class="t-card-title">Junk & Smash Journaling</h3><p class="t-card-desc">Mixed-media using repurposed materials — old book pages, magazine clippings, coffee-stained paper, fabric scraps, receipts. Intentionally imperfect and layered. Smash journaling is more spontaneous — glue in ticket stubs and wrappers alongside quick entries. Deeply relaxing and meditative.</p><div class="t-card-bestfor"><span class="t-card-tag">Tactile Learners</span><span class="t-card-tag">Crafts</span><span class="t-card-tag">Blank-Page Anxiety</span><span class="t-card-tag">Screen-Free</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-teal),transparent)"></div><div class="t-card-body"><div class="t-card-num">41</div><h3 class="t-card-title">Mind Mapping Journaling</h3><p class="t-card-desc">Visual thinking using branching diagrams. Core concept at center, branches for main themes, sub-branches for specific associations. Allows non-linear connections that sequential writing suppresses. Powerful as a warm-up before longer structured entries.</p><div class="t-card-bestfor"><span class="t-card-tag">Visual Thinkers</span><span class="t-card-tag">Complex Decisions</span><span class="t-card-tag">Brainstorming</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-teal),transparent)"></div><div class="t-card-body"><div class="t-card-num">42</div><h3 class="t-card-title">One Line a Day Journaling</h3><p class="t-card-desc">The most minimal viable practice — exactly one sentence per day. Captures the day's essence without requiring time or inspiration. Over months, the cumulative record becomes surprisingly rich. James Clear specifically recommends it as an entry-level habit that builds the identity of someone who journals.</p><div class="t-card-bestfor"><span class="t-card-tag">Absolute Beginners</span><span class="t-card-tag">Very Little Time</span><span class="t-card-tag">Habit Building</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-teal),transparent)"></div><div class="t-card-body"><div class="t-card-num">43</div><h3 class="t-card-title">Two-Column Journaling</h3><p class="t-card-desc">Divide the page into two columns — opposing perspectives, positive/negative, fear versus hope, rational mind versus gut feeling. Seeing both sides in parallel makes the brain evaluate with less emotional reactivity. Especially useful for decisions and conflict resolution.</p><div class="t-card-bestfor"><span class="t-card-tag">Decision-Making</span><span class="t-card-tag">Conflict Navigation</span><span class="t-card-tag">Cognitive Distortions</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-teal),transparent)"></div><div class="t-card-body"><div class="t-card-num">44</div><h3 class="t-card-title">List Journaling</h3><p class="t-card-desc">Replace flowing prose with curated lists. Faster to produce, easier to reread, often more honest because the format discourages rationalization. Highly versatile — gratitude lists, resentment lists, goals lists, values lists, all within the same journal.</p><div class="t-card-bestfor"><span class="t-card-tag">Prose-Writing Difficulty</span><span class="t-card-tag">Low Pressure</span><span class="t-card-tag">Quick Clarity</span></div></div></div>
+
+
+    <!-- ===== PART 7 DIVIDER ===== -->
+    <div class="cat-divider reveal"><div class="cat-label"><span>Part 7 — Hobby & Special Interest</span><span class="cat-label-line"></span><span class="text-muted-c" style="font-size:.6rem;font-weight:400;letter-spacing:0">45–48</span></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-orange),transparent)"></div><div class="t-card-body"><div class="t-card-num">45</div><h3 class="t-card-title">Reading Journal / Commonplace Book</h3><p class="t-card-desc">Document engagement with books — plot summaries, character analyses, favorite quotes, connections to your life. A commonplace book is a personal anthology of wisdom gathered from everything you read. Copying meaningful passages by hand is one of the best ways to internalize what you read. From Marcus Aurelius to Leonardo da Vinci.</p><div class="t-card-bestfor"><span class="t-card-tag">Readers</span><span class="t-card-tag">Writers</span><span class="t-card-tag">Students</span><span class="t-card-tag">Thinkers</span></div></div></div>
+
+    <div class="reveal reveal-delay-1 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-orange),transparent)"></div><div class="t-card-body"><div class="t-card-num">46</div><h3 class="t-card-title">Idea & Creativity Journal</h3><p class="t-card-desc">Dedicated entirely to capturing, developing, and organizing creative ideas. Don't just store passively — return to previous ideas, add to them, cross-reference, challenge assumptions. Ideas not written down within minutes are usually gone forever. Many prolific creators credit this simple discipline.</p><div class="t-card-bestfor"><span class="t-card-tag">Creative Fields</span><span class="t-card-tag">Entrepreneurs</span><span class="t-card-tag">Inventors</span><span class="t-card-tag">Writers</span></div></div></div>
+
+    <div class="reveal reveal-delay-2 t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-orange),transparent)"></div><div class="t-card-body"><div class="t-card-num">47</div><h3 class="t-card-title">Garden & Seasonal Journal</h3><p class="t-card-desc">Track a garden's life across seasons — what was planted, conditions, what grew well, wildlife. Practical record that improves future decisions. Writing about the same walk at different times of year over many years creates a remarkable record of external change and inner development.</p><div class="t-card-bestfor"><span class="t-card-tag">Gardeners</span><span class="t-card-tag">Naturalists</span><span class="t-card-tag">Seasonal Rhythms</span><span class="t-card-tag">Nature Connection</span></div></div></div>
+
+    <div class="reveal t-card"><div class="t-card-accent" style="background:linear-gradient(to right,var(--c-orange),transparent)"></div><div class="t-card-body"><div class="t-card-num">48</div><h3 class="t-card-title">Medical & Health Journal</h3><p class="t-card-desc">Track symptoms, medications, treatment responses, doctor appointments. Doctors report patients with detailed journals provide far more useful information than those relying on memory. Transforms vague impressions into specific, dated, quantified records for better medical decision-making. Also serves emotional processing of illness.</p><div class="t-card-bestfor"><span class="t-card-tag">Chronic Conditions</span><span class="t-card-tag">New Diagnosis</span><span class="t-card-tag">Recovery</span><span class="t-card-tag">Informed Healthcare</span></div></div></div>
+
+    </div><!-- end grid -->
+</div>
+</section>
+
+<div class="line-glow max-w-4xl mx-auto"></div>
+
+<!-- CTA -->
+<section class="relative py-24 md:py-32 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+        <div class="reveal glass-panel rounded-3xl p-10 md:p-16 relative overflow-hidden">
+            <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to bottom right,var(--glow-1),transparent,var(--glow-2))"></div>
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-8" style="background:var(--c-v-bg);border:1px solid var(--c-v-border)"><i data-lucide="compass" class="w-6 h-6" style="color:var(--c-v)"></i></div>
+                <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-primary-c mb-4 leading-tight">Ready to Find Your<br>Perfect Technique?</h2>
+                <p class="text-sm md:text-base font-light text-muted-c max-w-md mx-auto mb-10 leading-relaxed">48 techniques, 7 categories. The best one is the one that matches your current need.</p>
+                <a href="#" class="btn-primary group inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-medium">Explore All Techniques <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="relative border-t py-12 px-6" style="border-color:var(--footer-border)">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3"><div class="w-5 h-5 rounded-full flex items-center justify-center" style="background:var(--c-v-bg);border:1px solid var(--c-v-border)"><div class="w-1.5 h-1.5 rounded-full" style="background:var(--c-v)"></div></div><span class="text-sm font-medium text-muted-c">Journaling Techniques</span></div>
+        <p class="text-xs text-muted-c font-light">© 2026 journalingtechniques.com — All research cited with original sources.</p>
+        <div class="flex items-center gap-4"><a href="#" class="footer-icon"><i data-lucide="twitter" class="w-4 h-4"></i></a><a href="#" class="footer-icon"><i data-lucide="instagram" class="w-4 h-4"></i></a><a href="#" class="footer-icon"><i data-lucide="linkedin" class="w-4 h-4"></i></a></div>
+    </div>
+</footer>
+
+<script>
+lucide.createIcons();
+const html=document.documentElement,nav=document.getElementById('mainNav');
+html.setAttribute('data-theme',localStorage.getItem('theme')||'light');
+document.getElementById('themeToggle').addEventListener('click',()=>{const n=html.getAttribute('data-theme')==='light'?'dark':'light';html.setAttribute('data-theme',n);localStorage.setItem('theme',n);lucide.createIcons()});
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(e=>ro.observe(e));
+const co=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){const el=x.target;if(el.dataset.animated)return;el.dataset.animated='true';const t=parseFloat(el.dataset.target),s=el.dataset.suffix||'',d=t%1!==0,dur=2000,st=performance.now();(function u(n){const p=Math.min((n-st)/dur,1),ea=1-Math.pow(1-p,3);el.textContent=(d?(ea*t).toFixed(1):Math.round(ea*t))+s;if(p<1)requestAnimationFrame(u)})(st)}})},{threshold:.5});
+document.querySelectorAll('.stat-number').forEach(e=>co.observe(e));
+const mm=document.getElementById('mobileMenu');
+document.getElementById('mobileMenuBtn').addEventListener('click',()=>{mm.classList.remove('hidden');mm.classList.add('flex')});
+document.getElementById('mobileMenuClose').addEventListener('click',()=>{mm.classList.add('hidden');mm.classList.remove('flex')});
+document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>{mm.classList.add('hidden');mm.classList.remove('flex')}));
+window.addEventListener('scroll',()=>{nav.style.background=window.scrollY>100?'var(--bg-nav-scroll)':'var(--bg-nav)'},{passive:true});
+</script>
+</body>
+</html>

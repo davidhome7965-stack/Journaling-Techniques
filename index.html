@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journaling Techniques — The Complete Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+            }
+        }
+    }
+    </script>
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: #050505; color: #e5e5e5; font-weight: 300; line-height: 1.625; overflow-x: hidden; }
+
+        /* ========== NOISE TEXTURE ========== */
+        .noise-layer {
+            position: fixed; inset: 0; z-index: 9999; opacity: 0.03; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* ========== ANIMATED GRADIENT BG ========== */
+        .gradient-bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 60%, rgba(139,92,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(99,102,241,0.06) 0%, transparent 50%);
+            animation: gradientShift 20s ease-in-out infinite alternate;
+        }
+        @keyframes gradientShift {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+
+        /* ========== SCROLL REVEAL ========== */
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        .reveal-delay-5 { transition-delay: 0.5s; }
+
+        /* ========== GLASS PANEL ========== */
+        .glass-panel {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ========== HERO GRADIENT TEXT ========== */
+        .hero-gradient {
+            background: linear-gradient(to bottom right, #ffffff, #e5e5e5, #a3a3a3);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ========== STAT COUNTER ========== */
+        .stat-number {
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ========== QUOTE STYLING ========== */
+        .quote-border {
+            border-left: 3px solid rgba(99,102,241,0.5);
+        }
+
+        /* ========== BENEFIT CARD HOVER ========== */
+        .benefit-card {
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, background 0.5s ease;
+        }
+        .benefit-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* ========== NAVBAR BLUR ========== */
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* ========== FLOATING PEN ICON ========== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+
+        /* ========== SCROLL INDICATOR ========== */
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+        .scroll-indicator { animation: scrollBounce 2s ease-in-out infinite; }
+
+        /* ========== HORIZONTAL LINE GLOW ========== */
+        .line-glow {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(99,102,241,0.3), transparent);
+        }
+
+        /* ========== CUSTOM SCROLLBAR ========== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* ========== BENEFIT ITEM ========== */
+        .benefit-item {
+            padding: 1.25rem 1.5rem;
+            border-radius: 1rem;
+            transition: background 0.3s ease;
+        }
+        .benefit-item:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* ========== SECTION LABEL ========== */
+        .section-label {
+            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+            color: #818cf8;
+        }
+
+        /* ========== PULSE DOT ========== */
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+        .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+    </style>
+</head>
+
+<body class="font-inter">
+    <!-- Noise Texture -->
+    <div class="noise-layer"></div>
+
+    <!-- Animated Gradient Background -->
+    <div class="gradient-bg"></div>
+
+    <!-- ============================================ -->
+    <!-- NAVIGATION -->
+    <!-- ============================================ -->
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 nav-blur bg-white/[0.03] border border-white/[0.06] rounded-full px-2 py-1.5 flex items-center gap-1 shadow-[0_0_20px_rgba(0,0,0,0.3)]">
+        <a href="#hero" class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/[0.05] transition-colors">
+            <div class="w-5 h-5 rounded-full bg-indigo-500/30 border border-indigo-400/30 flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+            </div>
+            <span class="text-sm font-medium text-white/90 hidden sm:inline">Journaling</span>
+        </a>
+        <div class="hidden md:flex items-center gap-0.5">
+            <a href="#what-is" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">What is</a>
+            <a href="#benefits" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Benefits</a>
+            <a href="#stats" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Research</a>
+            <a href="#mental" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Mental</a>
+            <a href="#physical" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Physical</a>
+            <a href="#cognitive" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Cognitive</a>
+        </div>
+        <!-- Mobile menu button -->
+        <button id="mobileMenuBtn" class="md:hidden px-3 py-2 text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">
+            <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 bg-black/90 nav-blur hidden flex-col items-center justify-center gap-6">
+        <button id="mobileMenuClose" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        <a href="#what-is" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">What is Journaling</a>
+        <a href="#benefits" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Benefits</a>
+        <a href="#stats" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Research</a>
+        <a href="#mental" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Mental Health</a>
+        <a href="#physical" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Physical Health</a>
+        <a href="#cognitive" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Cognitive</a>
+    </div>
+
+
+    <!-- ============================================ -->
+    <!-- HERO SECTION -->
+    <!-- ============================================ -->
+    <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20">
+        <div class="relative z-10 max-w-5xl mx-auto text-center">
+            <!-- Label -->
+            <div class="reveal flex items-center justify-center gap-2 mb-8">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 pulse-dot"></span>
+                <span class="section-label">The Complete Guide — Updated 2026</span>
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="reveal reveal-delay-1 hero-gradient text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.9] mb-8">
+                Journaling<br>Techniques
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="reveal reveal-delay-2 text-base sm:text-lg md:text-xl font-light text-white/50 max-w-2xl mx-auto mb-6 leading-relaxed">
+                Every Method, Style, and Practice That Actually Works
+            </p>
+
+            <!-- Hook Text -->
+            <p class="reveal reveal-delay-3 text-sm sm:text-base font-light text-white/40 max-w-xl mx-auto mb-12 leading-relaxed">
+                You've probably started a journal at least once. Maybe you wrote a few entries, felt good about it — and then quietly stopped somewhere around page four. The blank page won.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="reveal reveal-delay-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#what-is" class="group inline-flex items-center gap-2 bg-white text-black px-7 py-3.5 rounded-full text-sm font-medium hover:bg-indigo-50 hover:scale-105 transition-all duration-300">
+                    Start Reading
+                    <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
+                </a>
+                <a href="#benefits" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium text-white/60 border border-white/[0.08] hover:bg-white/[0.05] hover:text-white/90 transition-all duration-300">
+                    See Benefits
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 scroll-indicator">
+            <i data-lucide="chevron-down" class="w-5 h-5 text-white/30"></i>
+        </div>
+
+        <!-- Floating decorative element -->
+        <div class="absolute top-1/3 right-[10%] hidden lg:block float-anim opacity-20">
+            <i data-lucide="pen-tool" class="w-8 h-8 text-indigo-400/50"></i>
+        </div>
+        <div class="absolute bottom-1/3 left-[8%] hidden lg:block float-anim opacity-15" style="animation-delay: -3s;">
+            <i data-lucide="book-open" class="w-6 h-6 text-indigo-400/50"></i>
+        </div>
+    </section>
+
+
+    <!-- Divider -->
+    <div class="line-glow max-w-4xl mx-auto"></div>
+
+
+    <!-- ============================================ -->
+    <!-- THE PROBLEM / HOOK -->
+    <!-- ============================================ -->
+    <section class="relative py-24 md:py-32 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                <!-- Subtle accent glow -->
+                <div class="absolute -top-20 -right-20 w-60 h-60 bg-indigo-500/[0.04] rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <span class="section-label mb-6 block">The Real Problem</span>
+                    <p class="text-lg md:text-xl font-light text-white/70 leading-relaxed mb-6">
+                        Here is the thing most people never realize: the reason journaling didn't stick was <span class="text-white font-medium">not a lack of discipline</span>. It was a lack of the <span class="text-indigo-400 font-medium">right technique</span>.
+                    </p>
+                    <p class="text-base font-light text-white/50 leading-relaxed mb-6">
+                        Staring at an empty page and writing "Dear Diary" is one way to journal — but it is only one of dozens of approaches, and it happens to be the one most people find the hardest to maintain.
+                    </p>
+                    <p class="text-base font-light text-white/50 leading-relaxed">
+                        Whether you want to manage anxiety, boost productivity, unlock creativity, process grief, or simply understand yourself better — there is a journaling technique designed for exactly that.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!-- WHAT IS JOURNALING -->
+    <!-- ============================================ -->
+    <section id="what-is" class="relative py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal text-center mb-16">
+                <span class="section-label mb-4 block">Understanding</span>
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95]">
+                    What Is Journaling<br>& Why Does It Work?
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Definition Card -->
+                <div class="reveal reveal-delay-1 glass-panel rounded-2xl p-8 benefit-card">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                        <i data-lucide="feather" class="w-5 h-5 text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-4">The Practice</h3>
+                    <p class="text-sm font-light text-white/50 leading-relaxed">
+                        Journaling is the practice of writing down your thoughts, feelings, experiences, goals, observations, or ideas on a regular basis. But that definition barely scratches the surface of what journaling actually does inside your brain.
+                    </p>
+                </div>
+
+                <!-- Science Card -->
+                <div class="reveal reveal-delay-2 glass-panel rounded-2xl p-8 benefit-card">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                        <i data-lucide="brain" class="w-5 h-5 text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-4">The Science</h3>
+                    <p class="text-sm font-light text-white/50 leading-relaxed">
+                        Expressive writing activates the <span class="text-white/70">prefrontal cortex</span> — the brain's executive control center — while simultaneously reducing activity in the <span class="text-white/70">amygdala</span>, our threat detection system. Writing calms anxiety and activates rational thinking.
+                    </p>
+                </div>
+
+                <!-- Pennebaker Card -->
+                <div class="reveal reveal-delay-3 glass-panel rounded-2xl p-8 benefit-card">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                        <i data-lucide="microscope" class="w-5 h-5 text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-4">Dr. Pennebaker's Research</h3>
+                    <p class="text-sm font-light text-white/50 leading-relaxed">
+                        Dr. James Pennebaker at the University of Texas spent decades studying emotional disclosure through writing. His research — replicated hundreds of times — showed that writing about difficult experiences helps the brain organize chaotic thoughts and release pent-up emotions.
+                    </p>
+                </div>
+
+                <!-- Mechanism Card -->
+                <div class="reveal reveal-delay-4 glass-panel rounded-2xl p-8 benefit-card">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+                        <i data-lucide="settings" class="w-5 h-5 text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-4">The Mechanism</h3>
+                    <p class="text-sm font-light text-white/50 leading-relaxed">
+                        Journaling techniques are not just ways to fill a page. They are <span class="text-white/70">structured approaches to changing how your brain processes</span> emotions, problems, and experiences. The best technique matches your current need.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div class="reveal mt-16 quote-border glass-panel rounded-r-2xl pl-8 pr-8 py-8 md:pl-12 md:pr-12 md:py-10">
+                <p class="text-base md:text-lg font-light text-white/60 leading-relaxed italic mb-4">
+                    "Writing about emotional experiences helps process traumatic events by organizing chaotic thoughts and releasing pent-up emotions, leading to improved mental clarity and resilience."
+                </p>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                        <i data-lucide="user" class="w-4 h-4 text-indigo-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-white/70">Dr. James Pennebaker</p>
+                        <p class="text-xs text-white/40">University of Texas at Austin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Divider -->
+    <div class="line-glow max-w-4xl mx-auto"></div>
+
+
+    <!-- ============================================ -->
+    <!-- BENEFITS OVERVIEW -->
+    <!-- ============================================ -->
+    <section id="benefits" class="relative py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal text-center mb-16">
+                <span class="section-label mb-4 block">Evidence-Based</span>
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95] mb-6">
+                    The Benefits of<br>Journaling
+                </h2>
+                <p class="text-base font-light text-white/40 max-w-xl mx-auto">
+                    This is not self-help speculation. These are findings from peer-reviewed clinical trials.
+                </p>
+            </div>
+
+            <!-- 3 Overview Cards -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Mental -->
+                <a href="#mental" class="reveal reveal-delay-1 group glass-panel rounded-2xl p-8 benefit-card block">
+                    <div class="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i data-lucide="heart-pulse" class="w-6 h-6 text-violet-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-3">Mental & Emotional</h3>
+                    <p class="text-sm font-light text-white/40 leading-relaxed">
+                        Reduced anxiety, fewer depressive symptoms, better emotional regulation, and broken cycles of rumination.
+                    </p>
+                    <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-400/70 group-hover:text-indigo-400 transition-colors">
+                        Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Physical -->
+                <a href="#physical" class="reveal reveal-delay-2 group glass-panel rounded-2xl p-8 benefit-card block">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i data-lucide="activity" class="w-6 h-6 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-3">Physical Health</h3>
+                    <p class="text-sm font-light text-white/40 leading-relaxed">
+                        Faster wound healing, fewer sick days, lower blood pressure, better sleep, and reduced chronic pain.
+                    </p>
+                    <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-400/70 group-hover:text-indigo-400 transition-colors">
+                        Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Cognitive -->
+                <a href="#cognitive" class="reveal reveal-delay-3 group glass-panel rounded-2xl p-8 benefit-card block">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <i data-lucide="lightbulb" class="w-6 h-6 text-amber-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-white/90 mb-3">Cognitive & Productivity</h3>
+                    <p class="text-sm font-light text-white/40 leading-relaxed">
+                        Improved memory, greater clarity, better decision-making, and unlocked creative thinking.
+                    </p>
+                    <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-400/70 group-hover:text-indigo-400 transition-colors">
+                        Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!-- STATS SECTION -->
+    <!-- ============================================ -->
+    <section id="stats" class="relative py-20 md:py-28 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal text-center mb-14">
+                <span class="section-label mb-4 block">By The Numbers</span>
+                <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/80">What Research Actually Shows</h2>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="reveal reveal-delay-1 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
+                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="45" data-suffix="%">0%</div>
+                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Reduction in anxiety & depression symptoms</p>
+                </div>
+                <div class="reveal reveal-delay-2 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
+                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="56.3" data-suffix="%">0%</div>
+                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Reported better mental health in just one month</p>
+                </div>
+                <div class="reveal reveal-delay-3 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
+                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="23" data-suffix="%">0%</div>
+                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Drop in cortisol (stress hormone) levels</p>
+                </div>
+                <div class="reveal reveal-delay-4 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
+                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="9" data-suffix="%">0%</div>
+                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Anxiety reduction (2022 systematic review)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Divider -->
+    <div class="line-glow max-w-4xl mx-auto"></div>
+
+
+    <!-- ============================================ -->
+    <!-- MENTAL & EMOTIONAL BENEFITS (Detailed) -->
+    <!-- ============================================ -->
+    <section id="mental" class="relative py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+                <!-- Left: Heading -->
+                <div class="lg:col-span-4">
+                    <div class="reveal lg:sticky lg:top-32">
+                        <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6">
+                            <i data-lucide="heart-pulse" class="w-5 h-5 text-violet-400"></i>
+                        </div>
+                        <span class="section-label mb-4 block">Category 01</span>
+                        <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 leading-tight mb-4">
+                            Mental & Emotional Benefits
+                        </h2>
+                        <p class="text-sm font-light text-white/40 leading-relaxed">
+                            The most well-documented and widely studied category of journaling benefits.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Items -->
+                <div class="lg:col-span-8 space-y-2">
+                    <div class="reveal benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="trending-down" class="w-3 h-3 text-violet-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">20–45% Symptom Reduction</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Reported across multiple clinical studies of regular journalers. Consistent journaling practice reduces anxiety and depression while simultaneously boosting immune function.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-1 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="shield-check" class="w-3 h-3 text-violet-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">As Effective as CBT</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    A landmark 2006 study found that journaling can be as effective as cognitive-behavioral therapy in reducing depression risk in young adults — a finding that surprised even its researchers.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-2 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="sparkles" class="w-3 h-3 text-violet-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">56.3% Improvement in One Month</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    In positive affect journaling trials, participants reported better mental health after just one month, versus 31.3% in control groups.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-3 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="refresh-cw" class="w-3 h-3 text-violet-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Breaks Rumination Cycles</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Journaling breaks the exhausting loop of replaying the same worries over and over. When you write a thought down, you externalize it — it moves from a trapped feeling to words on a page you can analyze with perspective.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-4 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="scale" class="w-3 h-3 text-violet-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Emotional Regulation</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    A 2025 analysis confirmed that consistent journaling practice reduces anxiety and depression while simultaneously improving emotional regulation — giving you better control over your responses.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Divider -->
+    <div class="line-glow max-w-4xl mx-auto"></div>
+
+
+    <!-- ============================================ -->
+    <!-- PHYSICAL HEALTH BENEFITS -->
+    <!-- ============================================ -->
+    <section id="physical" class="relative py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+                <!-- Left: Heading -->
+                <div class="lg:col-span-4">
+                    <div class="reveal lg:sticky lg:top-32">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+                            <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <span class="section-label mb-4 block">Category 02</span>
+                        <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 leading-tight mb-4">
+                            Physical Health Benefits
+                        </h2>
+                        <p class="text-sm font-light text-white/40 leading-relaxed">
+                            This is the one that surprises people most. Journaling has measurable effects on your body.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Items -->
+                <div class="lg:col-span-8 space-y-2">
+                    <div class="reveal benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="bandage" class="w-3 h-3 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Faster Wound Healing</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    A study of 49 adults in New Zealand found that people who wrote about their feelings before a biopsy healed significantly faster than those who wrote about daily activities.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-1 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="calendar-check" class="w-3 h-3 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Fewer Sick Days</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Studies show that time spent journaling about deepest thoughts and feelings can reduce the number of sick days taken from work — your immune system literally gets stronger.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-2 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="gauge" class="w-3 h-3 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Lower Blood Pressure</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Journaling helps reduce stress hormones, with research showing cortisol levels — the primary stress hormone — can drop by up to 23% in regular journalers.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-3 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="moon" class="w-3 h-3 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Better Sleep</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Writing a gratitude journal before bed helps clear the mind, reduce worry, and improve sleep quality. People fall asleep faster and experience fewer disruptions throughout the night.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-4 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="heart" class="w-3 h-3 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Reduced Chronic Pain</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    People with chronic conditions who journaled about their emotions reported fewer days on which pain inhibited their usual activities — mind-body connection at work.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Divider -->
+    <div class="line-glow max-w-4xl mx-auto"></div>
+
+
+    <!-- ============================================ -->
+    <!-- COGNITIVE & PRODUCTIVITY BENEFITS -->
+    <!-- ============================================ -->
+    <section id="cognitive" class="relative py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+                <!-- Left: Heading -->
+                <div class="lg:col-span-4">
+                    <div class="reveal lg:sticky lg:top-32">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6">
+                            <i data-lucide="lightbulb" class="w-5 h-5 text-amber-400"></i>
+                        </div>
+                        <span class="section-label mb-4 block">Category 03</span>
+                        <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 leading-tight mb-4">
+                            Cognitive & Productivity
+                        </h2>
+                        <p class="text-sm font-light text-white/40 leading-relaxed">
+                            Beyond mental and physical health — documented benefits for how you think and perform.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Items -->
+                <div class="lg:col-span-8 space-y-2">
+                    <div class="reveal benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="database" class="w-3 h-3 text-amber-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Improved Memory</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    The act of writing consolidates information in your brain more effectively than just thinking about it. Your brain processes written information differently — it encodes it more deeply.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-1 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="eye" class="w-3 h-3 text-amber-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Greater Clarity</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Writing forces you to slow down and articulate what you actually think and feel, which often reveals clarity you didn't know you had. The fog lifts when you put pen to paper.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-2 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="git-branch" class="w-3 h-3 text-amber-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Better Decision-Making</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Journaling helps you examine assumptions, consider multiple perspectives, and identify patterns in your own behavior — leading to more thoughtful and effective decisions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-delay-3 benefit-item rounded-2xl">
+                        <div class="flex items-start gap-4">
+                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="flame" class="w-3 h-3 text-amber-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-white/80 mb-2">Increased Creativity</h4>
+                                <p class="text-sm font-light text-white/45 leading-relaxed">
+                                    Several journaling techniques — particularly stream of consciousness and morning pages — are specifically designed to unlock creative thinking by bypassing your inner critic.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Divider -->
+    <div class="line-glow max-w-4xl mx-auto"></div>
+
+
+    <!-- ============================================ -->
+    <!-- CTA SECTION -->
+    <!-- ============================================ -->
+    <section class="relative py-24 md:py-32 px-6">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="reveal glass-panel rounded-3xl p-10 md:p-16 relative overflow-hidden">
+                <!-- Background glow -->
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-violet-500/[0.05] pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-8">
+                        <i data-lucide="compass" class="w-6 h-6 text-indigo-400"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 mb-4 leading-tight">
+                        Ready to Find Your<br>Perfect Technique?
+                    </h2>
+                    <p class="text-sm md:text-base font-light text-white/40 max-w-md mx-auto mb-10 leading-relaxed">
+                        The best journaling technique is the one that matches your current need. Let's find yours.
+                    </p>
+                    <a href="#" class="group inline-flex items-center gap-2 bg-white text-black px-8 py-4 rounded-full text-sm font-medium hover:bg-indigo-50 hover:scale-105 transition-all duration-300">
+                        Explore All Techniques
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================ -->
+    <footer class="relative border-t border-white/[0.05] py-12 px-6">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-5 h-5 rounded-full bg-indigo-500/30 border border-indigo-400/30 flex items-center justify-center">
+                    <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                </div>
+                <span class="text-sm font-medium text-white/50">Journaling Techniques</span>
+            </div>
+            <p class="text-xs text-white/30 font-light">
+                © 2026 journalingtechniques.com — All research cited with original sources.
+            </p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="text-white/30 hover:text-white/60 transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                <a href="#" class="text-white/30 hover:text-white/60 transition-colors"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                <a href="#" class="text-white/30 hover:text-white/60 transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ============================================ -->
+    <!-- JAVASCRIPT — Lightweight -->
+    <!-- ============================================ -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // ===== SCROLL REVEAL (Intersection Observer) =====
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ===== ANIMATED COUNTERS =====
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    if (el.dataset.animated) return;
+                    el.dataset.animated = 'true';
+
+                    const target = parseFloat(el.dataset.target);
+                    const suffix = el.dataset.suffix || '';
+                    const isDecimal = target % 1 !== 0;
+                    const duration = 2000;
+                    const startTime = performance.now();
+
+                    function updateCounter(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        // Ease out cubic
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = eased * target;
+
+                        if (isDecimal) {
+                            el.textContent = current.toFixed(1) + suffix;
+                        } else {
+                            el.textContent = Math.round(current) + suffix;
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        }
+                    }
+                    requestAnimationFrame(updateCounter);
+                }
+            });
+        }, { threshold: 0.5 });
+        statNumbers.forEach(el => counterObserver.observe(el));
+
+        // ===== MOBILE MENU =====
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+            });
+        });
+
+        // ===== NAVBAR BACKGROUND ON SCROLL =====
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(5,5,5,0.8)';
+            } else {
+                nav.style.background = 'rgba(255,255,255,0.03)';
+            }
+        }, { passive: true });
+    </script>
+</body>
+</html>
