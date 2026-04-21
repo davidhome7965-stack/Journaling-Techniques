@@ -1,898 +1,556 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journaling Techniques — The Complete Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journaling Techniques — The Complete Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{inter:['Inter','sans-serif']}}}}</script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;overflow-x:hidden;transition:background .4s,color .4s}
 
-    <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: { 'inter': ['Inter', 'sans-serif'] },
-            }
-        }
-    }
-    </script>
-
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: #050505; color: #e5e5e5; font-weight: 300; line-height: 1.625; overflow-x: hidden; }
-
-        /* ========== NOISE TEXTURE ========== */
-        .noise-layer {
-            position: fixed; inset: 0; z-index: 9999; opacity: 0.03; pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        }
-
-        /* ========== ANIMATED GRADIENT BG ========== */
-        .gradient-bg {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background:
-                radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 80% 60%, rgba(139,92,246,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(99,102,241,0.06) 0%, transparent 50%);
-            animation: gradientShift 20s ease-in-out infinite alternate;
-        }
-        @keyframes gradientShift {
-            0% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0.8; transform: scale(1); }
-        }
-
-        /* ========== SCROLL REVEAL ========== */
-        .reveal {
-            opacity: 0; transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-        .reveal-delay-4 { transition-delay: 0.4s; }
-        .reveal-delay-5 { transition-delay: 0.5s; }
-
-        /* ========== GLASS PANEL ========== */
-        .glass-panel {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-
-        /* ========== HERO GRADIENT TEXT ========== */
-        .hero-gradient {
-            background: linear-gradient(to bottom right, #ffffff, #e5e5e5, #a3a3a3);
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* ========== STAT COUNTER ========== */
-        .stat-number {
-            background: linear-gradient(135deg, #818cf8, #a78bfa);
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* ========== QUOTE STYLING ========== */
-        .quote-border {
-            border-left: 3px solid rgba(99,102,241,0.5);
-        }
-
-        /* ========== BENEFIT CARD HOVER ========== */
-        .benefit-card {
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, background 0.5s ease;
-        }
-        .benefit-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.05);
-        }
-
-        /* ========== NAVBAR BLUR ========== */
-        .nav-blur {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        /* ========== FLOATING PEN ICON ========== */
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-12px) rotate(5deg); }
-        }
-        .float-anim { animation: float 6s ease-in-out infinite; }
-
-        /* ========== SCROLL INDICATOR ========== */
-        @keyframes scrollBounce {
-            0%, 100% { transform: translateY(0); opacity: 0.6; }
-            50% { transform: translateY(8px); opacity: 1; }
-        }
-        .scroll-indicator { animation: scrollBounce 2s ease-in-out infinite; }
-
-        /* ========== HORIZONTAL LINE GLOW ========== */
-        .line-glow {
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(99,102,241,0.3), transparent);
-        }
-
-        /* ========== CUSTOM SCROLLBAR ========== */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-        /* ========== BENEFIT ITEM ========== */
-        .benefit-item {
-            padding: 1.25rem 1.5rem;
-            border-radius: 1rem;
-            transition: background 0.3s ease;
-        }
-        .benefit-item:hover {
-            background: rgba(255,255,255,0.03);
-        }
-
-        /* ========== SECTION LABEL ========== */
-        .section-label {
-            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-            color: #818cf8;
-        }
-
-        /* ========== PULSE DOT ========== */
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.5); }
-        }
-        .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
-    </style>
+:root{
+--bg:#FAFAFA;--bgc:#FFF;--bgch:#F9FAFB;--bgn:rgba(255,255,255,.75);--bgns:rgba(255,255,255,.92);--bgm:rgba(255,255,255,.96);
+--th:#111;--tp:#1a1a1a;--ts:#4b5563;--tm:#9ca3af;--tl:#6366f1;
+--bc:rgba(0,0,0,.07);--bch:rgba(0,0,0,.12);--bn:rgba(0,0,0,.08);--bd:rgba(99,102,241,.15);--bq:rgba(99,102,241,.4);
+--gl:rgba(255,255,255,.7);--glb:rgba(0,0,0,.06);--glh:rgba(0,0,0,.025);
+--gw1:rgba(99,102,241,.06);--gw2:rgba(139,92,246,.04);--gw3:rgba(99,102,241,.03);
+--sc:0 1px 3px rgba(0,0,0,.04);--sch:0 10px 30px rgba(0,0,0,.06);--sn:0 1px 8px rgba(0,0,0,.06);
+--bb:#111;--bt:#FFF;--bh:#6366f1;
+--bfb:rgba(0,0,0,.04);--bft:#6b7280;--pb:rgba(99,102,241,.05);--pbd:rgba(99,102,241,.1);--pt:#6366f1;
+--ftb:#0f0f0f;--ftt:rgba(255,255,255,.5);--fth:rgba(255,255,255,.85);--ftd:rgba(255,255,255,.08);
+--cv:#6366f1;--ce:#10b981;--ca:#f59e0b;--cr:#f43f5e;--cs:#0ea5e9;--cp:#a855f7;--cre:#e11d48;--ct:#14b8a6;--co:#f97316;
+--cvb:rgba(99,102,241,.08);--ceb:rgba(16,185,129,.08);--cab:rgba(245,158,11,.08);--crb:rgba(244,63,94,.07);--csb:rgba(14,165,233,.07);--cpb:rgba(168,85,247,.07);--creb:rgba(225,29,72,.07);--ctb:rgba(20,184,166,.07);--cob:rgba(249,115,22,.07);
+--cvd:rgba(99,102,241,.15);--ced:rgba(16,185,129,.15);--cad:rgba(245,158,11,.15);--crd:rgba(244,63,94,.14);--csd:rgba(14,165,233,.14);--cpd:rgba(168,85,247,.14);--cred:rgba(225,29,72,.14);--ctd:rgba(20,184,166,.14);--cod:rgba(249,115,22,.14);
+}
+[data-theme="dark"]{
+--bg:#050505;--bgc:rgba(255,255,255,.03);--bgch:rgba(255,255,255,.05);--bgn:rgba(255,255,255,.03);--bgns:rgba(5,5,5,.88);--bgm:rgba(5,5,5,.96);
+--th:#FFF;--tp:#e5e5e5;--ts:rgba(255,255,255,.5);--tm:rgba(255,255,255,.4);--tl:#818cf8;
+--bc:rgba(255,255,255,.06);--bch:rgba(255,255,255,.1);--bn:rgba(255,255,255,.06);--bd:rgba(99,102,241,.3);--bq:rgba(99,102,241,.5);
+--gl:rgba(255,255,255,.03);--glb:rgba(255,255,255,.06);--glh:rgba(255,255,255,.03);
+--gw1:rgba(99,102,241,.12);--gw2:rgba(139,92,246,.08);--gw3:rgba(99,102,241,.06);
+--sc:none;--sch:none;--sn:0 0 20px rgba(0,0,0,.3);
+--bb:#FFF;--bt:#000;--bh:#818cf8;
+--bfb:rgba(255,255,255,.05);--bft:rgba(255,255,255,.5);--pb:rgba(99,102,241,.08);--pbd:rgba(99,102,241,.15);--pt:#818cf8;
+--ftb:#0a0a0a;--ftt:rgba(255,255,255,.4);--fth:rgba(255,255,255,.8);--ftd:rgba(255,255,255,.06);
+--cv:#a78bfa;--ce:#34d399;--ca:#fbbf24;--cr:#fb7185;--cs:#38bdf8;--cp:#c084fc;--cre:#fb7185;--ct:#2dd4bf;--co:#fb923c;
+--cvb:rgba(139,92,246,.1);--ceb:rgba(16,185,129,.1);--cab:rgba(245,158,11,.1);--crb:rgba(244,63,94,.1);--csb:rgba(14,165,233,.1);--cpb:rgba(168,85,247,.1);--creb:rgba(225,29,72,.1);--ctb:rgba(20,184,166,.1);--cob:rgba(249,115,22,.1);
+--cvd:rgba(139,92,246,.2);--ced:rgba(16,185,129,.2);--cad:rgba(245,158,11,.2);--crd:rgba(244,63,94,.2);--csd:rgba(14,165,233,.2);--cpd:rgba(168,85,247,.2);--cred:rgba(225,29,72,.2);--ctd:rgba(20,184,166,.2);--cod:rgba(249,115,22,.2);
+}
+body{background:var(--bg);color:var(--tp);font-weight:300;line-height:1.625}
+.nl{position:fixed;inset:0;z-index:9999;opacity:.02;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.gb{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% -20%,var(--gw1) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 60%,var(--gw2) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 20% 80%,var(--gw3) 0%,transparent 50%);animation:ga 20s ease-in-out infinite alternate}
+@keyframes ga{0%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}100%{opacity:.8;transform:scale(1)}}
+.rv{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}.rv.v{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+.gp{background:var(--gl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glb);box-shadow:var(--sc)}
+.hg{background:linear-gradient(to bottom right,var(--th),var(--ts),var(--tm));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sn{background:linear-gradient(135deg,var(--cv),var(--cp));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lg{height:1px;background:linear-gradient(to right,transparent,var(--bd),transparent)}
+.cd{background:var(--bgc);border:1px solid var(--bc);box-shadow:var(--sc);transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .5s,box-shadow .5s}
+.cd:hover{transform:translateY(-6px);border-color:var(--bch);box-shadow:var(--sch)}
+.nb{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}.fa{animation:fl 6s ease-in-out infinite}
+@keyframes sb{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(8px);opacity:1}}.si{animation:sb 2s ease-in-out infinite}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}.pa{animation:pd 2s ease-in-out infinite}
+.slb{font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--tl)}
+.nvl{color:var(--tm);transition:color .2s,background .2s}.nvl:hover{color:var(--tp);background:var(--glh)}
+.bpn{background:var(--bb);color:var(--bt);transition:all .3s}.bpn:hover{background:var(--bh);transform:scale(1.05)}
+.bsn{color:var(--tm);border:1px solid var(--bc);transition:all .3s}.bsn:hover{color:var(--tp);background:var(--glh)}
+.bm{padding:1.25rem 1.5rem;border-radius:1rem;transition:background .3s}.bm:hover{background:var(--glh)}
+.iv{background:var(--cvb);border:1px solid var(--cvd);color:var(--cv)}
+.ie{background:var(--ceb);border:1px solid var(--ced);color:var(--ce)}
+.ia{background:var(--cab);border:1px solid var(--cad);color:var(--ca)}
+.ir{background:var(--crb);border:1px solid var(--crd);color:var(--cr)}
+.tc{background:var(--bgc);border:1px solid var(--bc);box-shadow:var(--sc);border-radius:1.25rem;overflow:hidden;position:relative;transition:border-color .4s,box-shadow .4s}
+.tc:not(.op):hover{border-color:var(--bch);box-shadow:var(--sch)}
+.tc.op{border-color:var(--bch);box-shadow:var(--sch)}
+.ta{position:absolute;top:0;left:0;right:0;height:3px;z-index:1}
+.tb{padding:1.5rem 1.5rem 1.25rem;position:relative;cursor:pointer}
+.tn{font-size:.65rem;font-weight:600;letter-spacing:.1em;color:var(--tm);margin-bottom:.5rem}
+.tt{font-size:1rem;font-weight:500;color:var(--tp);margin-bottom:.6rem;line-height:1.3}
+.tds{font-size:.8rem;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:1rem}
+.tbf{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.5rem}
+.tg{font-size:.6rem;font-weight:500;padding:.2rem .55rem;border-radius:999px;background:var(--bfb);color:var(--bft)}
+.tarr{position:absolute;bottom:1rem;right:1.25rem;color:var(--tm);opacity:.4;transition:opacity .3s,transform .4s cubic-bezier(.16,1,.3,1)}
+.tc:hover .tarr,.tc.op .tarr{opacity:.8}
+.tc.op .tarr{transform:rotate(180deg)}
+.tx{max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.16,1,.3,1)}
+.txi{padding:0 1.5rem 1.5rem;display:flex;flex-direction:column;gap:1rem}
+.txd{height:1px;background:var(--bc);margin:0 1.5rem}
+.tc.op .txd{background:var(--bch)}
+.txp{font-size:.825rem;font-weight:300;color:var(--tm);line-height:1.7}
+.tximg{width:100%;aspect-ratio:16/9;border-radius:.875rem;background:var(--bgch);border:1px dashed var(--bc);display:flex;align-items:center;justify-content:center;color:var(--tm);overflow:hidden}
+.tximg img{width:100%;height:100%;object-fit:cover;border-radius:.875rem}
+.txpr{background:var(--pb);border:1px solid var(--pbd);border-radius:.75rem;padding:.75rem 1rem}
+.txprt{font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--pt);margin-bottom:.4rem}
+.txprp{font-size:.8rem;font-weight:300;color:var(--tm);line-height:1.65;padding-left:.85rem;position:relative;margin-top:.35rem}
+.txprp::before{content:'';position:absolute;left:0;top:.55em;width:4px;height:4px;border-radius:50%;background:var(--pt);opacity:.5}
+.txaf{display:flex;flex-wrap:wrap;gap:.35rem}
+#grid{overflow-anchor:none}
+.ph{grid-column:1/-1;padding:2.5rem 0 1rem}
+.phb{display:inline-flex;align-items:center;gap:.5rem;font-size:.6rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px;margin-bottom:.75rem}
+.ph h3{font-size:1.5rem;font-weight:500;color:var(--tp);line-height:1.3;margin-bottom:.5rem}
+.ph p{font-size:.85rem;font-weight:300;color:var(--tm);max-width:600px;line-height:1.6}
+.phl{height:1px;margin-top:1.25rem;border-radius:1px}
+.sd{grid-column:1/-1;padding:1rem 0 .25rem}
+.sdl{display:inline-flex;align-items:center;gap:.5rem;font-size:.55rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--tm)}
+.sdl span:first-child{white-space:nowrap}
+.sdn{flex:1;height:1px;background:var(--bc)}
+.ft{background:var(--ftb);border-top:1px solid var(--ftd)}
+.fl{color:var(--ftt);font-size:.85rem;font-weight:300;transition:color .2s;display:block;padding:.25rem 0}
+.fl:hover{color:var(--fth)}
+.fh{color:var(--fth);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+.fi{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--ftt);transition:all .2s}
+.fi:hover{background:rgba(255,255,255,.1);color:var(--fth)}
+.ftbt{border-top:1px solid var(--ftd);padding:1.5rem 0;margin-top:3rem}
+.ttg{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--bc);background:var(--gl);cursor:pointer;transition:all .3s;color:var(--ts);position:relative}
+.ttg:hover{background:var(--bgch);border-color:var(--bch);color:var(--tp)}
+.ttg .is,.ttg .im{transition:opacity .3s,transform .3s;position:absolute}
+[data-theme="light"] .ttg .im{opacity:1;transform:rotate(0)}[data-theme="light"] .ttg .is{opacity:0;transform:rotate(-90deg)}
+[data-theme="dark"] .ttg .is{opacity:1;transform:rotate(0)}[data-theme="dark"] .ttg .im{opacity:0;transform:rotate(90deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1)}
+</style>
 </head>
-
 <body class="font-inter">
-    <!-- Noise Texture -->
-    <div class="noise-layer"></div>
-
-    <!-- Animated Gradient Background -->
-    <div class="gradient-bg"></div>
-
-    <!-- ============================================ -->
-    <!-- NAVIGATION -->
-    <!-- ============================================ -->
-    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 nav-blur bg-white/[0.03] border border-white/[0.06] rounded-full px-2 py-1.5 flex items-center gap-1 shadow-[0_0_20px_rgba(0,0,0,0.3)]">
-        <a href="#hero" class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/[0.05] transition-colors">
-            <div class="w-5 h-5 rounded-full bg-indigo-500/30 border border-indigo-400/30 flex items-center justify-center">
-                <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
-            </div>
-            <span class="text-sm font-medium text-white/90 hidden sm:inline">Journaling</span>
-        </a>
-        <div class="hidden md:flex items-center gap-0.5">
-            <a href="#what-is" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">What is</a>
-            <a href="#benefits" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Benefits</a>
-            <a href="#stats" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Research</a>
-            <a href="#mental" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Mental</a>
-            <a href="#physical" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Physical</a>
-            <a href="#cognitive" class="px-3 py-2 text-xs font-medium text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">Cognitive</a>
-        </div>
-        <!-- Mobile menu button -->
-        <button id="mobileMenuBtn" class="md:hidden px-3 py-2 text-white/50 hover:text-white/90 rounded-full hover:bg-white/[0.05] transition-colors">
-            <i data-lucide="menu" class="w-4 h-4"></i>
-        </button>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed inset-0 z-40 bg-black/90 nav-blur hidden flex-col items-center justify-center gap-6">
-        <button id="mobileMenuClose" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors">
-            <i data-lucide="x" class="w-6 h-6"></i>
-        </button>
-        <a href="#what-is" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">What is Journaling</a>
-        <a href="#benefits" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Benefits</a>
-        <a href="#stats" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Research</a>
-        <a href="#mental" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Mental Health</a>
-        <a href="#physical" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Physical Health</a>
-        <a href="#cognitive" class="mobile-link text-lg font-light text-white/70 hover:text-white transition-colors">Cognitive</a>
-    </div>
-
-
-    <!-- ============================================ -->
-    <!-- HERO SECTION -->
-    <!-- ============================================ -->
-    <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20">
-        <div class="relative z-10 max-w-5xl mx-auto text-center">
-            <!-- Label -->
-            <div class="reveal flex items-center justify-center gap-2 mb-8">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 pulse-dot"></span>
-                <span class="section-label">The Complete Guide — Updated 2026</span>
-            </div>
-
-            <!-- Main Headline -->
-            <h1 class="reveal reveal-delay-1 hero-gradient text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.9] mb-8">
-                Journaling<br>Techniques
-            </h1>
-
-            <!-- Subtitle -->
-            <p class="reveal reveal-delay-2 text-base sm:text-lg md:text-xl font-light text-white/50 max-w-2xl mx-auto mb-6 leading-relaxed">
-                Every Method, Style, and Practice That Actually Works
-            </p>
-
-            <!-- Hook Text -->
-            <p class="reveal reveal-delay-3 text-sm sm:text-base font-light text-white/40 max-w-xl mx-auto mb-12 leading-relaxed">
-                You've probably started a journal at least once. Maybe you wrote a few entries, felt good about it — and then quietly stopped somewhere around page four. The blank page won.
-            </p>
-
-            <!-- CTA Buttons -->
-            <div class="reveal reveal-delay-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="#what-is" class="group inline-flex items-center gap-2 bg-white text-black px-7 py-3.5 rounded-full text-sm font-medium hover:bg-indigo-50 hover:scale-105 transition-all duration-300">
-                    Start Reading
-                    <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
-                </a>
-                <a href="#benefits" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium text-white/60 border border-white/[0.08] hover:bg-white/[0.05] hover:text-white/90 transition-all duration-300">
-                    See Benefits
-                </a>
-            </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 scroll-indicator">
-            <i data-lucide="chevron-down" class="w-5 h-5 text-white/30"></i>
-        </div>
-
-        <!-- Floating decorative element -->
-        <div class="absolute top-1/3 right-[10%] hidden lg:block float-anim opacity-20">
-            <i data-lucide="pen-tool" class="w-8 h-8 text-indigo-400/50"></i>
-        </div>
-        <div class="absolute bottom-1/3 left-[8%] hidden lg:block float-anim opacity-15" style="animation-delay: -3s;">
-            <i data-lucide="book-open" class="w-6 h-6 text-indigo-400/50"></i>
-        </div>
-    </section>
-
-
-    <!-- Divider -->
-    <div class="line-glow max-w-4xl mx-auto"></div>
-
-
-    <!-- ============================================ -->
-    <!-- THE PROBLEM / HOOK -->
-    <!-- ============================================ -->
-    <section class="relative py-24 md:py-32 px-6">
-        <div class="max-w-4xl mx-auto">
-            <div class="reveal glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
-                <!-- Subtle accent glow -->
-                <div class="absolute -top-20 -right-20 w-60 h-60 bg-indigo-500/[0.04] rounded-full blur-3xl pointer-events-none"></div>
-
-                <div class="relative z-10">
-                    <span class="section-label mb-6 block">The Real Problem</span>
-                    <p class="text-lg md:text-xl font-light text-white/70 leading-relaxed mb-6">
-                        Here is the thing most people never realize: the reason journaling didn't stick was <span class="text-white font-medium">not a lack of discipline</span>. It was a lack of the <span class="text-indigo-400 font-medium">right technique</span>.
-                    </p>
-                    <p class="text-base font-light text-white/50 leading-relaxed mb-6">
-                        Staring at an empty page and writing "Dear Diary" is one way to journal — but it is only one of dozens of approaches, and it happens to be the one most people find the hardest to maintain.
-                    </p>
-                    <p class="text-base font-light text-white/50 leading-relaxed">
-                        Whether you want to manage anxiety, boost productivity, unlock creativity, process grief, or simply understand yourself better — there is a journaling technique designed for exactly that.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- ============================================ -->
-    <!-- WHAT IS JOURNALING -->
-    <!-- ============================================ -->
-    <section id="what-is" class="relative py-24 md:py-32 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="reveal text-center mb-16">
-                <span class="section-label mb-4 block">Understanding</span>
-                <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95]">
-                    What Is Journaling<br>& Why Does It Work?
-                </h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Definition Card -->
-                <div class="reveal reveal-delay-1 glass-panel rounded-2xl p-8 benefit-card">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                        <i data-lucide="feather" class="w-5 h-5 text-indigo-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-4">The Practice</h3>
-                    <p class="text-sm font-light text-white/50 leading-relaxed">
-                        Journaling is the practice of writing down your thoughts, feelings, experiences, goals, observations, or ideas on a regular basis. But that definition barely scratches the surface of what journaling actually does inside your brain.
-                    </p>
-                </div>
-
-                <!-- Science Card -->
-                <div class="reveal reveal-delay-2 glass-panel rounded-2xl p-8 benefit-card">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                        <i data-lucide="brain" class="w-5 h-5 text-indigo-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-4">The Science</h3>
-                    <p class="text-sm font-light text-white/50 leading-relaxed">
-                        Expressive writing activates the <span class="text-white/70">prefrontal cortex</span> — the brain's executive control center — while simultaneously reducing activity in the <span class="text-white/70">amygdala</span>, our threat detection system. Writing calms anxiety and activates rational thinking.
-                    </p>
-                </div>
-
-                <!-- Pennebaker Card -->
-                <div class="reveal reveal-delay-3 glass-panel rounded-2xl p-8 benefit-card">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                        <i data-lucide="microscope" class="w-5 h-5 text-indigo-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-4">Dr. Pennebaker's Research</h3>
-                    <p class="text-sm font-light text-white/50 leading-relaxed">
-                        Dr. James Pennebaker at the University of Texas spent decades studying emotional disclosure through writing. His research — replicated hundreds of times — showed that writing about difficult experiences helps the brain organize chaotic thoughts and release pent-up emotions.
-                    </p>
-                </div>
-
-                <!-- Mechanism Card -->
-                <div class="reveal reveal-delay-4 glass-panel rounded-2xl p-8 benefit-card">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
-                        <i data-lucide="settings" class="w-5 h-5 text-indigo-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-4">The Mechanism</h3>
-                    <p class="text-sm font-light text-white/50 leading-relaxed">
-                        Journaling techniques are not just ways to fill a page. They are <span class="text-white/70">structured approaches to changing how your brain processes</span> emotions, problems, and experiences. The best technique matches your current need.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Quote -->
-            <div class="reveal mt-16 quote-border glass-panel rounded-r-2xl pl-8 pr-8 py-8 md:pl-12 md:pr-12 md:py-10">
-                <p class="text-base md:text-lg font-light text-white/60 leading-relaxed italic mb-4">
-                    "Writing about emotional experiences helps process traumatic events by organizing chaotic thoughts and releasing pent-up emotions, leading to improved mental clarity and resilience."
-                </p>
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
-                        <i data-lucide="user" class="w-4 h-4 text-indigo-400"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-white/70">Dr. James Pennebaker</p>
-                        <p class="text-xs text-white/40">University of Texas at Austin</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Divider -->
-    <div class="line-glow max-w-4xl mx-auto"></div>
-
-
-    <!-- ============================================ -->
-    <!-- BENEFITS OVERVIEW -->
-    <!-- ============================================ -->
-    <section id="benefits" class="relative py-24 md:py-32 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="reveal text-center mb-16">
-                <span class="section-label mb-4 block">Evidence-Based</span>
-                <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hero-gradient leading-[0.95] mb-6">
-                    The Benefits of<br>Journaling
-                </h2>
-                <p class="text-base font-light text-white/40 max-w-xl mx-auto">
-                    This is not self-help speculation. These are findings from peer-reviewed clinical trials.
-                </p>
-            </div>
-
-            <!-- 3 Overview Cards -->
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Mental -->
-                <a href="#mental" class="reveal reveal-delay-1 group glass-panel rounded-2xl p-8 benefit-card block">
-                    <div class="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                        <i data-lucide="heart-pulse" class="w-6 h-6 text-violet-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-3">Mental & Emotional</h3>
-                    <p class="text-sm font-light text-white/40 leading-relaxed">
-                        Reduced anxiety, fewer depressive symptoms, better emotional regulation, and broken cycles of rumination.
-                    </p>
-                    <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-400/70 group-hover:text-indigo-400 transition-colors">
-                        Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
-                    </div>
-                </a>
-
-                <!-- Physical -->
-                <a href="#physical" class="reveal reveal-delay-2 group glass-panel rounded-2xl p-8 benefit-card block">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                        <i data-lucide="activity" class="w-6 h-6 text-emerald-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-3">Physical Health</h3>
-                    <p class="text-sm font-light text-white/40 leading-relaxed">
-                        Faster wound healing, fewer sick days, lower blood pressure, better sleep, and reduced chronic pain.
-                    </p>
-                    <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-400/70 group-hover:text-indigo-400 transition-colors">
-                        Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
-                    </div>
-                </a>
-
-                <!-- Cognitive -->
-                <a href="#cognitive" class="reveal reveal-delay-3 group glass-panel rounded-2xl p-8 benefit-card block">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                        <i data-lucide="lightbulb" class="w-6 h-6 text-amber-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-white/90 mb-3">Cognitive & Productivity</h3>
-                    <p class="text-sm font-light text-white/40 leading-relaxed">
-                        Improved memory, greater clarity, better decision-making, and unlocked creative thinking.
-                    </p>
-                    <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-400/70 group-hover:text-indigo-400 transition-colors">
-                        Explore <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- ============================================ -->
-    <!-- STATS SECTION -->
-    <!-- ============================================ -->
-    <section id="stats" class="relative py-20 md:py-28 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="reveal text-center mb-14">
-                <span class="section-label mb-4 block">By The Numbers</span>
-                <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/80">What Research Actually Shows</h2>
-            </div>
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <div class="reveal reveal-delay-1 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
-                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="45" data-suffix="%">0%</div>
-                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Reduction in anxiety & depression symptoms</p>
-                </div>
-                <div class="reveal reveal-delay-2 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
-                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="56.3" data-suffix="%">0%</div>
-                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Reported better mental health in just one month</p>
-                </div>
-                <div class="reveal reveal-delay-3 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
-                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="23" data-suffix="%">0%</div>
-                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Drop in cortisol (stress hormone) levels</p>
-                </div>
-                <div class="reveal reveal-delay-4 glass-panel rounded-2xl p-6 md:p-8 text-center benefit-card">
-                    <div class="stat-number text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="9" data-suffix="%">0%</div>
-                    <p class="text-xs md:text-sm font-light text-white/40 leading-snug">Anxiety reduction (2022 systematic review)</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Divider -->
-    <div class="line-glow max-w-4xl mx-auto"></div>
-
-
-    <!-- ============================================ -->
-    <!-- MENTAL & EMOTIONAL BENEFITS (Detailed) -->
-    <!-- ============================================ -->
-    <section id="mental" class="relative py-24 md:py-32 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
-                <!-- Left: Heading -->
-                <div class="lg:col-span-4">
-                    <div class="reveal lg:sticky lg:top-32">
-                        <div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6">
-                            <i data-lucide="heart-pulse" class="w-5 h-5 text-violet-400"></i>
-                        </div>
-                        <span class="section-label mb-4 block">Category 01</span>
-                        <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 leading-tight mb-4">
-                            Mental & Emotional Benefits
-                        </h2>
-                        <p class="text-sm font-light text-white/40 leading-relaxed">
-                            The most well-documented and widely studied category of journaling benefits.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Right: Items -->
-                <div class="lg:col-span-8 space-y-2">
-                    <div class="reveal benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="trending-down" class="w-3 h-3 text-violet-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">20–45% Symptom Reduction</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Reported across multiple clinical studies of regular journalers. Consistent journaling practice reduces anxiety and depression while simultaneously boosting immune function.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-1 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="shield-check" class="w-3 h-3 text-violet-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">As Effective as CBT</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    A landmark 2006 study found that journaling can be as effective as cognitive-behavioral therapy in reducing depression risk in young adults — a finding that surprised even its researchers.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-2 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="sparkles" class="w-3 h-3 text-violet-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">56.3% Improvement in One Month</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    In positive affect journaling trials, participants reported better mental health after just one month, versus 31.3% in control groups.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-3 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="refresh-cw" class="w-3 h-3 text-violet-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Breaks Rumination Cycles</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Journaling breaks the exhausting loop of replaying the same worries over and over. When you write a thought down, you externalize it — it moves from a trapped feeling to words on a page you can analyze with perspective.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-4 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="scale" class="w-3 h-3 text-violet-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Emotional Regulation</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    A 2025 analysis confirmed that consistent journaling practice reduces anxiety and depression while simultaneously improving emotional regulation — giving you better control over your responses.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Divider -->
-    <div class="line-glow max-w-4xl mx-auto"></div>
-
-
-    <!-- ============================================ -->
-    <!-- PHYSICAL HEALTH BENEFITS -->
-    <!-- ============================================ -->
-    <section id="physical" class="relative py-24 md:py-32 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
-                <!-- Left: Heading -->
-                <div class="lg:col-span-4">
-                    <div class="reveal lg:sticky lg:top-32">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
-                            <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
-                        </div>
-                        <span class="section-label mb-4 block">Category 02</span>
-                        <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 leading-tight mb-4">
-                            Physical Health Benefits
-                        </h2>
-                        <p class="text-sm font-light text-white/40 leading-relaxed">
-                            This is the one that surprises people most. Journaling has measurable effects on your body.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Right: Items -->
-                <div class="lg:col-span-8 space-y-2">
-                    <div class="reveal benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="bandage" class="w-3 h-3 text-emerald-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Faster Wound Healing</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    A study of 49 adults in New Zealand found that people who wrote about their feelings before a biopsy healed significantly faster than those who wrote about daily activities.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-1 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="calendar-check" class="w-3 h-3 text-emerald-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Fewer Sick Days</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Studies show that time spent journaling about deepest thoughts and feelings can reduce the number of sick days taken from work — your immune system literally gets stronger.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-2 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="gauge" class="w-3 h-3 text-emerald-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Lower Blood Pressure</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Journaling helps reduce stress hormones, with research showing cortisol levels — the primary stress hormone — can drop by up to 23% in regular journalers.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-3 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="moon" class="w-3 h-3 text-emerald-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Better Sleep</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Writing a gratitude journal before bed helps clear the mind, reduce worry, and improve sleep quality. People fall asleep faster and experience fewer disruptions throughout the night.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-4 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="heart" class="w-3 h-3 text-emerald-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Reduced Chronic Pain</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    People with chronic conditions who journaled about their emotions reported fewer days on which pain inhibited their usual activities — mind-body connection at work.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Divider -->
-    <div class="line-glow max-w-4xl mx-auto"></div>
-
-
-    <!-- ============================================ -->
-    <!-- COGNITIVE & PRODUCTIVITY BENEFITS -->
-    <!-- ============================================ -->
-    <section id="cognitive" class="relative py-24 md:py-32 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
-                <!-- Left: Heading -->
-                <div class="lg:col-span-4">
-                    <div class="reveal lg:sticky lg:top-32">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6">
-                            <i data-lucide="lightbulb" class="w-5 h-5 text-amber-400"></i>
-                        </div>
-                        <span class="section-label mb-4 block">Category 03</span>
-                        <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 leading-tight mb-4">
-                            Cognitive & Productivity
-                        </h2>
-                        <p class="text-sm font-light text-white/40 leading-relaxed">
-                            Beyond mental and physical health — documented benefits for how you think and perform.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Right: Items -->
-                <div class="lg:col-span-8 space-y-2">
-                    <div class="reveal benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="database" class="w-3 h-3 text-amber-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Improved Memory</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    The act of writing consolidates information in your brain more effectively than just thinking about it. Your brain processes written information differently — it encodes it more deeply.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-1 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="eye" class="w-3 h-3 text-amber-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Greater Clarity</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Writing forces you to slow down and articulate what you actually think and feel, which often reveals clarity you didn't know you had. The fog lifts when you put pen to paper.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-2 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="git-branch" class="w-3 h-3 text-amber-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Better Decision-Making</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Journaling helps you examine assumptions, consider multiple perspectives, and identify patterns in your own behavior — leading to more thoughtful and effective decisions.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reveal reveal-delay-3 benefit-item rounded-2xl">
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1 w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="flame" class="w-3 h-3 text-amber-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-white/80 mb-2">Increased Creativity</h4>
-                                <p class="text-sm font-light text-white/45 leading-relaxed">
-                                    Several journaling techniques — particularly stream of consciousness and morning pages — are specifically designed to unlock creative thinking by bypassing your inner critic.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Divider -->
-    <div class="line-glow max-w-4xl mx-auto"></div>
-
-
-    <!-- ============================================ -->
-    <!-- CTA SECTION -->
-    <!-- ============================================ -->
-    <section class="relative py-24 md:py-32 px-6">
-        <div class="max-w-3xl mx-auto text-center">
-            <div class="reveal glass-panel rounded-3xl p-10 md:p-16 relative overflow-hidden">
-                <!-- Background glow -->
-                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-violet-500/[0.05] pointer-events-none"></div>
-
-                <div class="relative z-10">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-8">
-                        <i data-lucide="compass" class="w-6 h-6 text-indigo-400"></i>
-                    </div>
-                    <h2 class="text-2xl md:text-4xl font-medium tracking-tight text-white/90 mb-4 leading-tight">
-                        Ready to Find Your<br>Perfect Technique?
-                    </h2>
-                    <p class="text-sm md:text-base font-light text-white/40 max-w-md mx-auto mb-10 leading-relaxed">
-                        The best journaling technique is the one that matches your current need. Let's find yours.
-                    </p>
-                    <a href="#" class="group inline-flex items-center gap-2 bg-white text-black px-8 py-4 rounded-full text-sm font-medium hover:bg-indigo-50 hover:scale-105 transition-all duration-300">
-                        Explore All Techniques
-                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- ============================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================ -->
-    <footer class="relative border-t border-white/[0.05] py-12 px-6">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-5 h-5 rounded-full bg-indigo-500/30 border border-indigo-400/30 flex items-center justify-center">
-                    <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
-                </div>
-                <span class="text-sm font-medium text-white/50">Journaling Techniques</span>
-            </div>
-            <p class="text-xs text-white/30 font-light">
-                © 2026 journalingtechniques.com — All research cited with original sources.
-            </p>
-            <div class="flex items-center gap-4">
-                <a href="#" class="text-white/30 hover:text-white/60 transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
-                <a href="#" class="text-white/30 hover:text-white/60 transition-colors"><i data-lucide="instagram" class="w-4 h-4"></i></a>
-                <a href="#" class="text-white/30 hover:text-white/60 transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
-            </div>
-        </div>
-    </footer>
-
-
-    <!-- ============================================ -->
-    <!-- JAVASCRIPT — Lightweight -->
-    <!-- ============================================ -->
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
-
-        // ===== SCROLL REVEAL (Intersection Observer) =====
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-        revealElements.forEach(el => revealObserver.observe(el));
-
-        // ===== ANIMATED COUNTERS =====
-        const statNumbers = document.querySelectorAll('.stat-number');
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    if (el.dataset.animated) return;
-                    el.dataset.animated = 'true';
-
-                    const target = parseFloat(el.dataset.target);
-                    const suffix = el.dataset.suffix || '';
-                    const isDecimal = target % 1 !== 0;
-                    const duration = 2000;
-                    const startTime = performance.now();
-
-                    function updateCounter(currentTime) {
-                        const elapsed = currentTime - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-                        // Ease out cubic
-                        const eased = 1 - Math.pow(1 - progress, 3);
-                        const current = eased * target;
-
-                        if (isDecimal) {
-                            el.textContent = current.toFixed(1) + suffix;
-                        } else {
-                            el.textContent = Math.round(current) + suffix;
-                        }
-
-                        if (progress < 1) {
-                            requestAnimationFrame(updateCounter);
-                        }
-                    }
-                    requestAnimationFrame(updateCounter);
-                }
-            });
-        }, { threshold: 0.5 });
-        statNumbers.forEach(el => counterObserver.observe(el));
-
-        // ===== MOBILE MENU =====
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const mobileMenuClose = document.getElementById('mobileMenuClose');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-            mobileMenu.classList.add('flex');
-        });
-
-        mobileMenuClose.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            mobileMenu.classList.remove('flex');
-        });
-
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                mobileMenu.classList.remove('flex');
-            });
-        });
-
-        // ===== NAVBAR BACKGROUND ON SCROLL =====
-        const nav = document.querySelector('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                nav.style.background = 'rgba(5,5,5,0.8)';
-            } else {
-                nav.style.background = 'rgba(255,255,255,0.03)';
-            }
-        }, { passive: true });
-    </script>
+<div class="nl"></div>
+<div class="gb"></div>
+
+<nav id="nav" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 nb rounded-full px-2 py-1.5 flex items-center gap-1" style="background:var(--bgn);border:1px solid var(--bn);box-shadow:var(--sn)">
+<a href="#hero" class="flex items-center gap-2 px-4 py-2 rounded-full"><div class="w-5 h-5 rounded-full iv flex items-center justify-center"><div class="w-1.5 h-1.5 rounded-full" style="background:var(--cv)"></div></div><span class="text-sm font-medium hidden sm:inline" style="color:var(--tp)">Journaling</span></a>
+<div class="hidden lg:flex items-center gap-0.5">
+<a href="#what-is" class="nvl px-3 py-2 text-xs font-medium rounded-full">What is</a>
+<a href="#benefits" class="nvl px-3 py-2 text-xs font-medium rounded-full">Benefits</a>
+<a href="#stats" class="nvl px-3 py-2 text-xs font-medium rounded-full">Research</a>
+<a href="#mental" class="nvl px-3 py-2 text-xs font-medium rounded-full">Mental</a>
+<a href="#types" class="nvl px-3 py-2 text-xs font-medium rounded-full">Techniques</a>
+<a href="#guide" class="nvl px-3 py-2 text-xs font-medium rounded-full">Guide</a>
+</div>
+<button id="tbtn" class="ttg ml-1"><span class="is"><i data-lucide="sun" class="w-4 h-4"></i></span><span class="im"><i data-lucide="moon" class="w-4 h-4"></i></span></button>
+<button id="mbtn" class="lg:hidden px-3 py-2 nvl rounded-full"><i data-lucide="menu" class="w-4 h-4"></i></button>
+</nav>
+<div id="mm" class="fixed inset-0 z-40 hidden flex-col items-center justify-center gap-6" style="background:var(--bgm);backdrop-filter:blur(20px)">
+<button id="mcl" class="absolute top-8 right-8 nvl"><i data-lucide="x" class="w-6 h-6"></i></button>
+<a href="#what-is" class="text-lg font-light" style="color:var(--ts)" onclick="closeMM()">What is</a>
+<a href="#benefits" class="text-lg font-light" style="color:var(--ts)" onclick="closeMM()">Benefits</a>
+<a href="#types" class="text-lg font-light" style="color:var(--ts)" onclick="closeMM()">48 Techniques</a>
+<a href="#guide" class="text-lg font-light" style="color:var(--ts)" onclick="closeMM()">Beginner's Guide</a>
+</div>
+
+<!-- HERO -->
+<section id="hero" class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20">
+<div class="relative z-10 max-w-5xl mx-auto text-center">
+<div class="rv flex items-center justify-center gap-2 mb-8"><span class="w-1.5 h-1.5 rounded-full pa" style="background:var(--cv)"></span><span class="slb">The Complete Guide — Updated 2026</span></div>
+<h1 class="rv d1 hg text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.9] mb-8">Journaling<br>Techniques</h1>
+<p class="rv d2 text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto mb-6 leading-relaxed" style="color:var(--ts)">Every Method, Style, and Practice That Actually Works</p>
+<p class="rv d3 text-sm sm:text-base font-light max-w-xl mx-auto mb-12 leading-relaxed" style="color:var(--tm)">You've probably started a journal at least once. Maybe you wrote a few entries, felt good about it — and then quietly stopped somewhere around page four.</p>
+<div class="rv d4 flex flex-col sm:flex-row items-center justify-center gap-4">
+<a href="#what-is" class="bpn group inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium">Start Reading <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i></a>
+<a href="#types" class="bsn inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-medium">48 Techniques</a>
+</div>
+</div>
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 si"><i data-lucide="chevron-down" class="w-5 h-5" style="color:var(--tm)"></i></div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- PROBLEM -->
+<section class="relative py-24 md:py-32 px-6">
+<div class="max-w-4xl mx-auto"><div class="rv gp rounded-3xl p-8 md:p-12 relative overflow-hidden"><div class="absolute -top-20 -right-20 w-60 h-60 pointer-events-none" style="background:var(--gw1);border-radius:50%;filter:blur(60px)"></div><div class="relative z-10"><span class="slb mb-6 block">The Real Problem</span><p class="text-lg md:text-xl font-light leading-relaxed mb-6" style="color:var(--ts)">The reason journaling didn't stick was <span class="font-medium" style="color:var(--tp)">not a lack of discipline</span>. It was a lack of the <span class="font-medium" style="color:var(--tl)">right technique</span>.</p><p class="text-base font-light leading-relaxed" style="color:var(--tm)">Whether you want to manage anxiety, boost productivity, unlock creativity, or understand yourself better — there is a technique designed for exactly that.</p></div></div></div>
+</section>
+
+<!-- WHAT IS -->
+<section id="what-is" class="relative py-24 md:py-32 px-6">
+<div class="max-w-6xl mx-auto">
+<div class="rv text-center mb-16"><span class="slb mb-4 block">Understanding</span><h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hg leading-[0.95]">What Is Journaling & Why Does It Work?</h2></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="rv d1 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center mb-5"><i data-lucide="feather" class="w-5 h-5"></i></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">The Practice</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Writing down thoughts, feelings, experiences regularly — barely scratches the surface of what it does inside your brain.</p></div>
+<div class="rv d2 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center mb-5"><i data-lucide="brain" class="w-5 h-5"></i></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">The Neuroscience</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Activates the <span style="color:var(--ts)">prefrontal cortex</span> while reducing <span style="color:var(--ts)">amygdala</span> activity — calms anxiety, activates rational thinking.</p></div>
+<div class="rv d3 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center mb-5"><i data-lucide="microscope" class="w-5 h-5"></i></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">Pennebaker's Research</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Decades at UT Austin — writing about difficult experiences organizes chaotic thoughts — replicated hundreds of times.</p></div>
+<div class="rv d4 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center mb-5"><i data-lucide="settings" class="w-5 h-5"></i></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">The Mechanism</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Structured approaches to <span style="color:var(--ts)">changing how your brain processes</span> emotions — not just ways to fill a page.</p></div>
+</div>
+<div class="rv mt-16 rounded-r-2xl pl-8 pr-8 py-8 md:pl-12 md:py-10 gp" style="border-left:3px solid var(--bq)">
+<p class="text-base md:text-lg font-light leading-relaxed italic mb-4" style="color:var(--ts)">"Writing about emotional experiences helps process traumatic events by organizing chaotic thoughts and releasing pent-up emotions, leading to improved mental clarity and resilience."</p>
+<div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full iv flex items-center justify-center"><i data-lucide="user" class="w-4 h-4"></i></div><div><p class="text-sm font-medium" style="color:var(--tp)">Dr. James Pennebaker</p><p class="text-xs" style="color:var(--tm)">University of Texas at Austin</p></div></div>
+</div>
+</div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- BENEFITS -->
+<section id="benefits" class="relative py-24 md:py-32 px-6">
+<div class="max-w-5xl mx-auto">
+<div class="rv text-center mb-16"><span class="slb mb-4 block">Evidence-Based</span><h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hg leading-[0.95] mb-6">The Benefits of Journaling</h2></div>
+<div class="grid md:grid-cols-3 gap-6">
+<a href="#mental" class="rv d1 group cd rounded-2xl p-8 block"><div class="w-12 h-12 rounded-2xl iv flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500"><i data-lucide="heart-pulse" class="w-6 h-6"></i></div><h3 class="text-lg font-medium mb-3" style="color:var(--tp)">Mental & Emotional</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Reduced anxiety, fewer depressive symptoms, better emotional regulation, broken rumination cycles.</p></a>
+<a href="#physical" class="rv d2 group cd rounded-2xl p-8 block"><div class="w-12 h-12 rounded-2xl ie flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500"><i data-lucide="activity" class="w-6 h-6"></i></div><h3 class="text-lg font-medium mb-3" style="color:var(--tp)">Physical Health</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Faster wound healing, fewer sick days, lower blood pressure, better sleep, reduced chronic pain.</p></a>
+<a href="#cognitive" class="rv d3 group cd rounded-2xl p-8 block"><div class="w-12 h-12 rounded-2xl ia flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500"><i data-lucide="lightbulb" class="w-6 h-6"></i></div><h3 class="text-lg font-medium mb-3" style="color:var(--tp)">Cognitive & Productivity</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Improved memory, greater clarity, better decision-making, unlocked creative thinking.</p></a>
+</div>
+</div>
+</section>
+
+<!-- STATS -->
+<section id="stats" class="relative py-20 md:py-28 px-6">
+<div class="max-w-5xl mx-auto">
+<div class="rv text-center mb-14"><span class="slb mb-4 block">By The Numbers</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight" style="color:var(--tp)">What Research Shows</h2></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+<div class="rv d1 cd rounded-2xl p-6 md:p-8 text-center"><div class="sn text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="45" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light" style="color:var(--tm)">Anxiety & depression reduction</p></div>
+<div class="rv d2 cd rounded-2xl p-6 md:p-8 text-center"><div class="sn text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="56.3" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light" style="color:var(--tm)">Better mental health in one month</p></div>
+<div class="rv d3 cd rounded-2xl p-6 md:p-8 text-center"><div class="sn text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="23" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light" style="color:var(--tm)">Drop in cortisol levels</p></div>
+<div class="rv d4 cd rounded-2xl p-6 md:p-8 text-center"><div class="sn text-4xl md:text-5xl font-semibold tracking-tight mb-2" data-target="9" data-suffix="%">0%</div><p class="text-xs md:text-sm font-light" style="color:var(--tm)">Anxiety reduction (2022 review)</p></div>
+</div>
+</div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- MENTAL -->
+<section id="mental" class="relative py-20 md:py-28 px-6">
+<div class="max-w-5xl mx-auto"><div class="grid lg:grid-cols-12 gap-12">
+<div class="lg:col-span-4"><div class="rv lg:sticky lg:top-32"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center mb-6"><i data-lucide="heart-pulse" class="w-5 h-5"></i></div><span class="slb mb-4 block">Category 01</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight leading-tight mb-4" style="color:var(--tp)">Mental & Emotional</h2></div></div>
+<div class="lg:col-span-8 space-y-2">
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="trending-down" class="w-3 h-3" style="color:var(--cv)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">20–45% Symptom Reduction</h4><p class="text-sm font-light" style="color:var(--tm)">Across multiple clinical studies.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="shield-check" class="w-3 h-3" style="color:var(--cv)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">As Effective as CBT</h4><p class="text-sm font-light" style="color:var(--tm)">2006 study — as effective as cognitive-behavioral therapy.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="sparkles" class="w-3 h-3" style="color:var(--cv)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">56.3% in One Month</h4><p class="text-sm font-light" style="color:var(--tm)">Versus 31.3% in control groups.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="refresh-cw" class="w-3 h-3" style="color:var(--cv)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Breaks Rumination</h4><p class="text-sm font-light" style="color:var(--tm)">Externalizes trapped feelings into analyzable words.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="scale" class="w-3 h-3" style="color:var(--cv)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Emotional Regulation</h4><p class="text-sm font-light" style="color:var(--tm)">2025 analysis confirmed significant improvement.</p></div></div></div>
+</div></div></div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- PHYSICAL -->
+<section id="physical" class="relative py-20 md:py-28 px-6">
+<div class="max-w-5xl mx-auto"><div class="grid lg:grid-cols-12 gap-12">
+<div class="lg:col-span-4"><div class="rv lg:sticky lg:top-32"><div class="w-10 h-10 rounded-xl ie flex items-center justify-center mb-6"><i data-lucide="activity" class="w-5 h-5"></i></div><span class="slb mb-4 block">Category 02</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight leading-tight mb-4" style="color:var(--tp)">Physical Health</h2></div></div>
+<div class="lg:col-span-8 space-y-2">
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="bandage" class="w-3 h-3" style="color:var(--ce)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Faster Wound Healing</h4><p class="text-sm font-light" style="color:var(--tm)">NZ study — wrote about feelings, healed faster.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="calendar-check" class="w-3 h-3" style="color:var(--ce)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Fewer Sick Days</h4><p class="text-sm font-light" style="color:var(--tm)">Immune system gets stronger.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="gauge" class="w-3 h-3" style="color:var(--ce)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Lower Blood Pressure</h4><p class="text-sm font-light" style="color:var(--tm)">Cortisol drops up to 23%.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="moon" class="w-3 h-3" style="color:var(--ce)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Better Sleep</h4><p class="text-sm font-light" style="color:var(--tm)">Clears mind, fewer disruptions.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="heart" class="w-3 h-3" style="color:var(--ce)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Reduced Chronic Pain</h4><p class="text-sm font-light" style="color:var(--tm)">Fewer inhibited-activity days.</p></div></div></div>
+</div></div></div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- COGNITIVE -->
+<section id="cognitive" class="relative py-20 md:py-28 px-6">
+<div class="max-w-5xl mx-auto"><div class="grid lg:grid-cols-12 gap-12">
+<div class="lg:col-span-4"><div class="rv lg:sticky lg:top-32"><div class="w-10 h-10 rounded-xl ia flex items-center justify-center mb-6"><i data-lucide="lightbulb" class="w-5 h-5"></i></div><span class="slb mb-4 block">Category 03</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight leading-tight mb-4" style="color:var(--tp)">Cognitive & Productivity</h2></div></div>
+<div class="lg:col-span-8 space-y-2">
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cab)"><i data-lucide="database" class="w-3 h-3" style="color:var(--ca)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Improved Memory</h4><p class="text-sm font-light" style="color:var(--tm)">Writing consolidates information more deeply.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cab)"><i data-lucide="eye" class="w-3 h-3" style="color:var(--ca)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Greater Clarity</h4><p class="text-sm font-light" style="color:var(--tm)">The fog lifts with pen to paper.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cab)"><i data-lucide="git-branch" class="w-3 h-3" style="color:var(--ca)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Better Decisions</h4><p class="text-sm font-light" style="color:var(--tm)">Examine assumptions, identify patterns.</p></div></div></div>
+<div class="rv bm rounded-2xl"><div class="flex items-start gap-4"><div class="mt-1 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cab)"><i data-lucide="flame" class="w-3 h-3" style="color:var(--ca)"></i></div><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Increased Creativity</h4><p class="text-sm font-light" style="color:var(--tm)">Bypasses inner critic for original thinking.</p></div></div></div>
+</div></div></div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- 48 TECHNIQUES -->
+<section id="types" class="relative py-24 md:py-32 px-6">
+<div class="max-w-6xl mx-auto">
+<div class="rv text-center mb-6">
+<span class="slb mb-4 block">The Complete List</span>
+<h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hg leading-[0.95] mb-6">Types of Journaling Techniques</h2>
+<p class="text-base font-light max-w-2xl mx-auto leading-relaxed" style="color:var(--tm)">48 techniques — click any card to expand full details.</p>
+</div>
+<div class="rv flex justify-center mb-14"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium" style="background:var(--cvb);color:var(--cv);border:1px solid var(--cvd)"><i data-lucide="layers" class="w-3.5 h-3.5"></i> 48 Techniques — 9 Parts</div></div>
+<div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-start"></div>
+</div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+
+<!-- ========== HOW TO START GUIDE ========== -->
+<section id="guide" class="relative py-24 md:py-32 px-6">
+<div class="max-w-5xl mx-auto">
+
+<!-- HEADER -->
+<div class="rv text-center mb-20">
+<span class="slb mb-4 block">Practical Guide</span>
+<h2 class="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight hg leading-[0.95] mb-6">How to Start a Journaling Practice</h2>
+<p class="text-base font-light max-w-2xl mx-auto leading-relaxed" style="color:var(--tm)">Every experienced journaler started exactly where you are now: staring at a blank notebook with good intentions and no idea what to write.</p>
+</div>
+
+<!-- STEP 1 -->
+<div class="rv mb-6 gp rounded-2xl p-8 md:p-10">
+<div class="flex items-center gap-4 mb-5"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center flex-shrink-0"><span class="text-sm font-semibold" style="color:var(--cv)">01</span></div><h3 class="text-xl md:text-2xl font-medium tracking-tight" style="color:var(--tp)">Choose Your Format First</h3></div>
+<p class="text-base font-light leading-relaxed mb-8" style="color:var(--ts)">Before you think about what to write, decide where to write. The best format is whichever one you will actually use consistently.</p>
+<div class="grid md:grid-cols-2 gap-5">
+<div class="rounded-xl p-6" style="background:var(--bgch);border:1px solid var(--bc)"><div class="flex items-center gap-3 mb-4"><i data-lucide="pen-tool" class="w-5 h-5" style="color:var(--cv)"></i><h4 class="text-sm font-medium" style="color:var(--tp)">Paper Journaling</h4></div><ul class="space-y-2.5"><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Feels more personal and private</span></li><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Handwriting activates different neural pathways</span></li><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Tactile experience slows you down — beneficial for emotional processing</span></li><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">No notifications, no distractions</span></li></ul></div>
+<div class="rounded-xl p-6" style="background:var(--bgch);border:1px solid var(--bc)"><div class="flex items-center gap-3 mb-4"><i data-lucide="smartphone" class="w-5 h-5" style="color:var(--ce)"></i><h4 class="text-sm font-medium" style="color:var(--tp)">Digital Journaling</h4></div><ul class="space-y-2.5"><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Faster, more searchable, always accessible</span></li><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Password-protected privacy</span></li><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Apps like Day One, Reflectly, Notion offer prompts and mood tracking</span></li><li class="flex items-start gap-2.5"><span class="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce);opacity:.5"></span><span class="text-sm font-light" style="color:var(--tm)">Always readable — no handwriting issues</span></li></ul></div>
+</div>
+</div>
+
+<!-- STEPS 2-4 -->
+<div class="grid md:grid-cols-3 gap-5 mb-6">
+<div class="rv d1 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center mb-5"><span class="text-sm font-semibold" style="color:var(--cv)">02</span></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">Start Smaller Than Necessary</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Three sentences. That's it. "What is on my mind right now?" That is a complete session. As the habit solidifies, you'll naturally write more.</p></div>
+<div class="rv d2 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl ie flex items-center justify-center mb-5"><span class="text-sm font-semibold" style="color:var(--ce)">03</span></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">One Technique for 30 Days</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Gratitude Monday, Morning Pages Tuesday, bullet Wednesday — none ever have time to work. One technique, 30 days, beats a month of variety.</p></div>
+<div class="rv d3 cd rounded-2xl p-7"><div class="w-10 h-10 rounded-xl ia flex items-center justify-center mb-5"><span class="text-sm font-semibold" style="color:var(--ca)">04</span></div><h3 class="text-base font-medium mb-3" style="color:var(--tp)">Tie It to an Existing Habit</h3><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Journal with morning coffee. Write before brushing teeth. Open it after your commute. The existing habit pulls the new one along.</p></div>
+</div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- PROMPTS -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">Conversation Starters</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">Prompts for Every Mood and Goal</h2></div>
+
+<div class="rv mb-4 gp rounded-2xl p-7 md:p-9">
+<div class="flex items-center gap-3 mb-5"><div class="w-8 h-8 rounded-lg iv flex items-center justify-center"><i data-lucide="cloud-lightning" class="w-4 h-4"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">Anxiety & Stress</h3></div>
+<div class="space-y-3.5"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">1.</span> What is the specific thing I am most worried about right now? How likely is it to actually happen?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">2.</span> If my best friend were feeling exactly what I am feeling, what would I tell them?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">3.</span> What is one thing I can control about this situation, and one thing I cannot?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">4.</span> Write about the worst case scenario in detail. Then write about how you would survive and recover from it.</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">5.</span> What has gotten me through difficult times before? What strength in me handled it?</p></div>
+</div>
+<div class="rv mb-4 gp rounded-2xl p-7 md:p-9">
+<div class="flex items-center gap-3 mb-5"><div class="w-8 h-8 rounded-lg ie flex items-center justify-center"><i data-lucide="search" class="w-4 h-4"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">Self-Discovery</h3></div>
+<div class="space-y-3.5"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">1.</span> What does a life well-lived look like to me, not to anyone else?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">2.</span> What am I pretending not to know about myself?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">3.</span> Which version of myself shows up when no one is watching?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">4.</span> What would I do if I knew I could not fail and no one would judge me?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">5.</span> What patterns keep repeating in my life? What might they be trying to teach me?</p></div>
+</div>
+<div class="rv mb-4 gp rounded-2xl p-7 md:p-9">
+<div class="flex items-center gap-3 mb-5"><div class="w-8 h-8 rounded-lg ir flex items-center justify-center"><i data-lucide="heart" class="w-4 h-4"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">Grief & Loss</h3></div>
+<div class="space-y-3.5"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">1.</span> Write a letter to what or who you have lost. Say everything you never got to say.</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">2.</span> What did this person, relationship, or experience give you that you are still carrying?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">3.</span> What does grief feel like in your body right now? Describe it physically, not emotionally.</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">4.</span> What is one memory you want to hold onto forever?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">5.</span> What part of yourself is still intact, even after this loss?</p></div>
+</div>
+<div class="grid md:grid-cols-2 gap-4 mb-4">
+<div class="rv gp rounded-2xl p-7 md:p-9">
+<div class="flex items-center gap-3 mb-5"><div class="w-8 h-8 rounded-lg ia flex items-center justify-center"><i data-lucide="target" class="w-4 h-4"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">Productivity & Goals</h3></div>
+<div class="space-y-3.5"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">1.</span> What does success look like for me in the next 90 days?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">2.</span> What is the one thing I keep putting off that would make everything else easier?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">3.</span> What would my future self thank me for doing today?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">4.</span> What belief about myself is holding back my progress?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">5.</span> Write about a time you achieved something you weren't sure you could.</p></div>
+</div>
+<div class="rv gp rounded-2xl p-7 md:p-9">
+<div class="flex items-center gap-3 mb-5"><div class="w-8 h-8 rounded-lg iv flex items-center justify-center"><i data-lucide="sun" class="w-4 h-4"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">Gratitude</h3></div>
+<div class="space-y-3.5"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">1.</span> Write about one small thing from today you almost missed being grateful for.</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">2.</span> What challenge in your past are you now grateful happened?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">3.</span> What does your ordinary Tuesday contain that would feel like luxury to a previous version of you?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">4.</span> What ability or quality in yourself are you most grateful for today?</p><p class="text-sm font-light leading-relaxed" style="color:var(--tm)"><span style="color:var(--ts)">5.</span> Write about a person who shaped you positively. What specifically?</p></div>
+</div>
+</div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- TIME & PLACE -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">When & Where</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">Best Time and Place to Journal</h2></div>
+<div class="grid md:grid-cols-3 gap-5 mb-8">
+<div class="rv cd rounded-2xl p-7"><div class="flex items-center gap-3 mb-4"><i data-lucide="sunrise" class="w-5 h-5" style="color:var(--ca)"></i><h4 class="text-sm font-medium" style="color:var(--tp)">Morning</h4></div><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Mind is fresh, day hasn't accumulated stress. What you write shapes how you approach the hours ahead. More proactive and forward-looking.</p></div>
+<div class="rv cd rounded-2xl p-7"><div class="flex items-center gap-3 mb-4"><i data-lucide="sunset" class="w-5 h-5" style="color:var(--cp)"></i><h4 class="text-sm font-medium" style="color:var(--tp)">Evening</h4></div><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Process the day, release residual stress, arrive at sleep with a clearer mind. Gratitude before bed improves sleep quality consistently.</p></div>
+<div class="rv cd rounded-2xl p-7"><div class="flex items-center gap-3 mb-4"><i data-lucide="zap" class="w-5 h-5" style="color:var(--cr)"></i><h4 class="text-sm font-medium" style="color:var(--tp)">On-Demand</h4></div><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">When overwhelmed, confused, angry, or exceptionally joyful. Captures something raw that scheduled writing often misses.</p></div>
+</div>
+<div class="rv rounded-2xl pl-8 pr-8 py-7 md:pl-10 gp" style="border-left:3px solid var(--bq)">
+<div class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:var(--cv)"></i><div><h4 class="text-sm font-medium mb-2" style="color:var(--tp)">Choosing Your Space</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Quiet, comfortable, no notifications, enough privacy for honesty. Many find that a regular spot — a specific chair, a corner of a coffee shop — becomes associated with the reflective state. Over time, going there becomes a signal to your brain to slow down.</p></div></div>
+</div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- DIGITAL VS PAPER -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">The Debate</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">Digital vs. Paper: Which Is Actually Better?</h2></div>
+<div class="grid md:grid-cols-2 gap-5 mb-8">
+<div class="rv cd rounded-2xl p-8">
+<div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center"><i data-lucide="pen-tool" class="w-5 h-5"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">The Case for Paper</h3></div>
+<ul class="space-y-4"><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--cv)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Neurological engagement</span><span class="text-xs font-light" style="color:var(--tm)">Handwriting activates different neural pathways. Stronger connection between thought and expression.</span></div></li><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--cv)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Zero distractions</span><span class="text-xs font-light" style="color:var(--tm)">No notifications. No social media. Fully in the experience.</span></div></li><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--cv)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">True privacy</span><span class="text-xs font-light" style="color:var(--tm)">A notebook in a drawer is fundamentally more secure than anything on a device.</span></div></li><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--cvb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--cv)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Tactile ritual</span><span class="text-xs font-light" style="color:var(--tm)">Choosing a pen, feeling paper, hearing the scratch — enhances the reflective state.</span></div></li></ul>
+</div>
+<div class="rv cd rounded-2xl p-8">
+<div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-xl ie flex items-center justify-center"><i data-lucide="smartphone" class="w-5 h-5"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">The Case for Digital</h3></div>
+<ul class="space-y-4"><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--ce)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Always accessible</span><span class="text-xs font-light" style="color:var(--tm)">Your phone is always with you. Capture insights immediately.</span></div></li><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--ce)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Searchable</span><span class="text-xs font-light" style="color:var(--tm)">Find every mention of a feeling, relationship, or project in seconds.</span></div></li><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--ce)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Guided features</span><span class="text-xs font-light" style="color:var(--tm)">Daily prompts, mood tracking, streak counters, reminders built in.</span></div></li><li class="flex items-start gap-3"><span class="mt-1 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--ceb)"><i data-lucide="check" class="w-3 h-3" style="color:var(--ce)"></i></span><div><span class="text-sm font-medium block mb-0.5" style="color:var(--tp)">Always readable</span><span class="text-xs font-light" style="color:var(--tm)">Not everyone can read their own handwriting. Digital solves this.</span></div></li></ul>
+</div>
+</div>
+<div class="rv rounded-2xl p-6 md:p-8 gp text-center"><p class="text-base font-light leading-relaxed" style="color:var(--ts)">Consistency matters far more than medium. <span class="font-medium" style="color:var(--tp)">An imperfect journaling habit is infinitely better than a perfect journaling plan that never happens.</span></p></div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- MISTAKES -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">Avoid These</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">Common Mistakes and How to Fix Them</h2></div>
+<div class="space-y-4 mb-4">
+<div class="rv gp rounded-2xl p-7 md:p-8"><div class="flex items-start gap-4"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:var(--crb);border:1px solid var(--crd)"><span class="text-xs font-bold" style="color:var(--cr)">01</span></div><div class="flex-1"><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Treating Your Journal Like a To-Do List</h4><p class="text-sm font-light leading-relaxed mb-3" style="color:var(--tm)">Recording tasks is useful, but if that's all you do, you're missing most of what journaling is designed for. Your journal should contain your inner life — reactions, interpretations, questions, feelings.</p><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium" style="background:var(--ceb);color:var(--ce);border:1px solid var(--ced)"><i data-lucide="wrench" class="w-3 h-3"></i> Fix: End every practical entry with "How I feel about all of this is…"</div></div></div></div>
+<div class="rv gp rounded-2xl p-7 md:p-8"><div class="flex items-start gap-4"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:var(--crb);border:1px solid var(--crd)"><span class="text-xs font-bold" style="color:var(--cr)">02</span></div><div class="flex-1"><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Writing What You Think You Should Feel</h4><p class="text-sm font-light leading-relaxed mb-3" style="color:var(--tm)">Journaling for an imagined audience kills the authenticity that makes it work. If your entries sound noble and presentable rather than true, you're writing for someone else.</p><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium" style="background:var(--ceb);color:var(--ce);border:1px solid var(--ced)"><i data-lucide="wrench" class="w-3 h-3"></i> Fix: Start with "What I'm not saying in this journal is…"</div></div></div></div>
+<div class="rv gp rounded-2xl p-7 md:p-8"><div class="flex items-start gap-4"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:var(--crb);border:1px solid var(--crd)"><span class="text-xs font-bold" style="color:var(--cr)">03</span></div><div class="flex-1"><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Quitting After Missing a Few Days</h4><p class="text-sm font-light leading-relaxed mb-3" style="color:var(--tm)">Missing days is not failure. Five days a week for a year beats three intensive weeks then stopping entirely because you missed Tuesday.</p><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium" style="background:var(--ceb);color:var(--ce);border:1px solid var(--ced)"><i data-lucide="wrench" class="w-3 h-3"></i> Fix: Write "I haven't written in a while, and here's where I am" and go.</div></div></div></div>
+<div class="rv gp rounded-2xl p-7 md:p-8"><div class="flex items-start gap-4"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:var(--crb);border:1px solid var(--crd)"><span class="text-xs font-bold" style="color:var(--cr)">04</span></div><div class="flex-1"><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Always Using the Same Technique</h4><p class="text-sm font-light leading-relaxed mb-3" style="color:var(--tm)">If your practice feels flat or repetitive, using the exact same approach is part of the problem. Different techniques unlock different kinds of insight.</p><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium" style="background:var(--ceb);color:var(--ce);border:1px solid var(--ced)"><i data-lucide="wrench" class="w-3 h-3"></i> Fix: Every month or two, try one technique you've never used before.</div></div></div></div>
+<div class="rv gp rounded-2xl p-7 md:p-8"><div class="flex items-start gap-4"><div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:var(--crb);border:1px solid var(--crd)"><span class="text-xs font-bold" style="color:var(--cr)">05</span></div><div class="flex-1"><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Ruminating Instead of Processing</h4><p class="text-sm font-light leading-relaxed mb-3" style="color:var(--tm)">Writing the same complaint over and over without moving toward insight is not therapeutic — it's just rumination on paper. Journaling immediately after trauma can actually increase distress.</p><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium" style="background:var(--ceb);color:var(--ce);border:1px solid var(--ced)"><i data-lucide="wrench" class="w-3 h-3"></i> Fix: Always add "What does this mean to me?" and "What can I do now?"</div></div></div></div>
+</div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- JOURNALING FOR SPECIFIC GOALS -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">Match Your Need</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">Journaling for Specific Goals</h2></div>
+<div class="grid md:grid-cols-2 gap-5 mb-5">
+<div class="rv cd rounded-2xl p-8"><div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl iv flex items-center justify-center"><i data-lucide="cloud-lightning" class="w-5 h-5"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">For Anxiety</h3></div><p class="text-sm font-light leading-relaxed mb-4" style="color:var(--tm)">Anxiety thrives in the gap between what you feel and what you understand. Journaling bridges that gap.</p><div class="space-y-2.5 mb-4"><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv)"></span><span class="text-sm font-light" style="color:var(--ts)">Expressive writing</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv)"></span><span class="text-sm font-light" style="color:var(--ts)">Worst-case scenario journaling</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv)"></span><span class="text-sm font-light" style="color:var(--ts)">Gratitude journaling</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cv)"></span><span class="text-sm font-light" style="color:var(--ts)">The Five Whys technique</span></div></div><p class="text-xs font-light leading-relaxed" style="color:var(--tm)">15 minutes, three times a week, for 30+ days produces meaningful reductions in clinical trials.</p></div>
+<div class="rv cd rounded-2xl p-8"><div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl ir flex items-center justify-center"><i data-lucide="heart" class="w-5 h-5"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">For Grief</h3></div><p class="text-sm font-light leading-relaxed mb-4" style="color:var(--tm)">Grief is not linear, and it cannot be rushed — but it can be accompanied. Journaling gives grief somewhere to go.</p><div class="space-y-2.5 mb-4"><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cr)"></span><span class="text-sm font-light" style="color:var(--ts)">Unsent letter writing</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cr)"></span><span class="text-sm font-light" style="color:var(--ts)">Expressive writing about loss</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--cr)"></span><span class="text-sm font-light" style="color:var(--ts)">Prompted journaling for loss</span></div></div><p class="text-xs font-light leading-relaxed" style="color:var(--tm)">The goal is not to move on quickly but to move through it with more honesty and compassion.</p></div>
+</div>
+<div class="grid md:grid-cols-2 gap-5 mb-4">
+<div class="rv cd rounded-2xl p-8"><div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl ia flex items-center justify-center"><i data-lucide="target" class="w-5 h-5"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">For Productivity</h3></div><p class="text-sm font-light leading-relaxed mb-4" style="color:var(--tm)">Bullet journaling is the most comprehensive, but far from the only approach.</p><div class="space-y-2.5"><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ca)"></span><span class="text-sm font-light" style="color:var(--ts)">Bullet journaling</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ca)"></span><span class="text-sm font-light" style="color:var(--ts)">Daily review journaling</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ca)"></span><span class="text-sm font-light" style="color:var(--ts)">Goal-setting journaling</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ca)"></span><span class="text-sm font-light" style="color:var(--ts)">Weekly reflection</span></div></div></div>
+<div class="rv cd rounded-2xl p-8"><div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl ie flex items-center justify-center"><i data-lucide="search" class="w-5 h-5"></i></div><h3 class="text-lg font-medium" style="color:var(--tp)">For Self-Discovery</h3></div><p class="text-sm font-light leading-relaxed mb-4" style="color:var(--tm)">Not a weekend project — a practice that unfolds over months and years, revealing layers you weren't ready to see earlier.</p><div class="space-y-2.5"><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce)"></span><span class="text-sm font-light" style="color:var(--ts)">Shadow work journaling</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce)"></span><span class="text-sm font-light" style="color:var(--ts)">The Five Whys technique</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce)"></span><span class="text-sm font-light" style="color:var(--ts)">Unsent letter to past/future self</span></div><div class="flex items-center gap-2.5"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:var(--ce)"></span><span class="text-sm font-light" style="color:var(--ts)">Deep prompted journaling</span></div></div></div>
+</div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- STAYING CONSISTENT -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">The Hard Part</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">How to Stay Consistent</h2></div>
+<div class="space-y-3 mb-4">
+<div class="rv gp rounded-2xl p-6 md:p-8 flex items-start gap-5"><span class="text-3xl font-semibold sn flex-shrink-0 leading-none mt-0.5">01</span><div><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Start with two minutes</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Not twenty. Not ten. Two. Set a timer. Once two minutes feels easy, move to five. Building slowly means you never face a commitment that feels too big.</p></div></div>
+<div class="rv gp rounded-2xl p-6 md:p-8 flex items-start gap-5"><span class="text-3xl font-semibold sn flex-shrink-0 leading-none mt-0.5">02</span><div><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Reduce friction to near zero</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Journal on your nightstand the night before. App on home screen. The fewer steps between you and the journal, the more likely you open it.</p></div></div>
+<div class="rv gp rounded-2xl p-6 md:p-8 flex items-start gap-5"><span class="text-3xl font-semibold sn flex-shrink-0 leading-none mt-0.5">03</span><div><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Track your streak, but don't worship it</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">A simple habit tracker creates visual motivation. But the moment a broken streak becomes a reason to quit, it's working against you.</p></div></div>
+<div class="rv gp rounded-2xl p-6 md:p-8 flex items-start gap-5"><span class="text-3xl font-semibold sn flex-shrink-0 leading-none mt-0.5">04</span><div><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Vary your technique when motivation drops</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">When it feels like a chore, introduce a new approach from this guide. Novelty restores engagement.</p></div></div>
+<div class="rv gp rounded-2xl p-6 md:p-8 flex items-start gap-5"><span class="text-3xl font-semibold sn flex-shrink-0 leading-none mt-0.5">05</span><div><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Connect it to your identity</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Not "I am trying to journal" but "I am someone who reflects on my experiences." Identity-based habits are the most durable.</p></div></div>
+<div class="rv gp rounded-2xl p-6 md:p-8 flex items-start gap-5"><span class="text-3xl font-semibold sn flex-shrink-0 leading-none mt-0.5">06</span><div><h4 class="text-base font-medium mb-2" style="color:var(--tp)">Be honest about what kind of journaler you are</h4><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Some thrive daily. Others are naturally periodic — deeply a few times a week. Neither is wrong. The best practice fits your actual life.</p></div></div>
+</div>
+
+<div class="lg max-w-4xl mx-auto my-16"></div>
+
+<!-- FAQ -->
+<div class="rv text-center mb-12"><span class="slb mb-4 block">Questions</span><h2 class="text-2xl md:text-4xl font-medium tracking-tight hg leading-[0.95]">Frequently Asked Questions</h2></div>
+<div class="space-y-3 mb-4">
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">How long should a journal entry be?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">As long as it needs to be. Some of the most powerful entries are three sentences. Some are ten pages. The question is not length but honesty. A short, truthful entry will always produce more insight than a long, performative one.</p></div></div></div>
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">Do I have to write every day?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">No. Research shows consistency over time matters more than daily frequency. Three to four times per week produces significant benefits. What matters is writing regularly enough to build a reflective habit.</p></div></div></div>
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">What if I don't know what to write?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Use a prompt. Or simply write: "Right now I don't know what to write, and the reason is probably…" and let whatever follows surprise you. The blank page is a starting point, not a wall.</p></div></div></div>
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">Is digital journaling as effective as paper?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Handwriting may have a slight edge for emotional processing due to different neural pathways. But digital journaling is far more effective than not journaling at all. Consistency always beats format.</p></div></div></div>
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">Should I reread old entries?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Yes, periodically. Rereading reveals patterns, shows growth, and surfaces recurring themes. Entries from a year ago provide perspective nothing else can. For Morning Pages, don't reread until several weeks have accumulated.</p></div></div></div>
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">Can journaling replace therapy?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">No. Journaling is a powerful complement to therapy and a valuable standalone practice for general mental health. But for serious conditions, trauma, or crisis, professional support is not replaceable. Think of it as something you do between therapy sessions.</p></div></div></div>
+<div class="rv gp rounded-2xl overflow-hidden faq-item"><div class="faq-q p-6 md:p-7 cursor-pointer flex items-center justify-between gap-4" style="transition:background .2s"><h4 class="text-sm md:text-base font-medium" style="color:var(--tp)">Which technique is best for beginners?</h4><i data-lucide="plus" class="w-4 h-4 flex-shrink-0" style="color:var(--tm);transition:transform .3s"></i></div><div class="faq-a"><div class="px-6 md:px-7 pb-6 md:pb-7"><p class="text-sm font-light leading-relaxed" style="color:var(--tm)">Gratitude journaling. Simple, less than five minutes, immediate positive effects, and builds a foundation that makes other techniques easier to sustain. Do it consistently for 30 days, then explore.</p></div></div></div>
+</div>
+
+<!-- FINAL TAKEAWAY -->
+<div class="rv mt-16 gp rounded-3xl p-10 md:p-14 relative overflow-hidden text-center">
+<div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to bottom right,var(--gw1),transparent,var(--gw2))"></div>
+<div class="relative z-10">
+<h2 class="text-2xl md:text-3xl font-medium tracking-tight mb-6 leading-tight" style="color:var(--tp)">Final Takeaway</h2>
+<p class="text-base font-light leading-relaxed mb-6 max-w-2xl mx-auto" style="color:var(--ts)">Journaling techniques are not about filling pages. They are about building a relationship with yourself that becomes one of the most reliable resources you have.</p>
+<p class="text-base font-light leading-relaxed mb-6 max-w-2xl mx-auto" style="color:var(--tm)">You don't need a perfect notebook, a dedicated hour, or a particularly articulate way with words. You need a willingness to be honest, a commitment to showing up regularly even when it feels pointless, and the knowledge that every page you fill is a conversation with yourself that no one else can have for you.</p>
+<p class="text-lg font-medium" style="color:var(--tp)">Pick one technique. Start tomorrow. Write three sentences. See what happens.</p>
+</div>
+</div>
+
+</div>
+</section>
+<div class="lg max-w-4xl mx-auto"></div>
+<!-- ========== END GUIDE ========== -->
+
+<!-- CTA -->
+<section class="relative py-24 md:py-32 px-6">
+<div class="max-w-3xl mx-auto text-center"><div class="rv gp rounded-3xl p-10 md:p-16 relative overflow-hidden"><div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to bottom right,var(--gw1),transparent,var(--gw2))"></div><div class="relative z-10"><div class="w-12 h-12 rounded-2xl iv flex items-center justify-center mx-auto mb-8"><i data-lucide="compass" class="w-6 h-6"></i></div><h2 class="text-2xl md:text-4xl font-medium tracking-tight mb-4 leading-tight" style="color:var(--tp)">Ready to Find Your Perfect Technique?</h2><p class="text-sm md:text-base font-light max-w-md mx-auto mb-10 leading-relaxed" style="color:var(--tm)">48 techniques, 9 categories. The best one matches your current need.</p><a href="#types" class="bpn group inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-medium">Explore All <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i></a></div></div></div>
+</section>
+
+<!-- FOOTER -->
+<footer class="ft" id="ft"></footer>
+
+<script>
+lucide.createIcons();
+var D=document.documentElement,NV=document.getElementById('nav');
+D.setAttribute('data-theme',localStorage.getItem('theme')||'light');
+document.getElementById('tbtn').onclick=function(){var t=D.getAttribute('data-theme')==='light'?'dark':'light';D.setAttribute('data-theme',t);localStorage.setItem('theme',t);lucide.createIcons()};
+function closeMM(){document.getElementById('mm').style.display='none'}
+document.getElementById('mbtn').onclick=function(){document.getElementById('mm').style.display='flex'};
+document.getElementById('mcl').onclick=closeMM;
+
+var CM={v:['var(--cvb)','var(--cvd)','var(--cv)'],e:['var(--ceb)','var(--ced)','var(--ce)'],a:['var(--cab)','var(--cad)','var(--ca)'],rose:['var(--crb)','var(--crd)','var(--cr)'],sky:['var(--csb)','var(--csd)','var(--cs)'],pur:['var(--cpb)','var(--cpd)','var(--cp)'],red:['var(--creb)','var(--cred)','var(--cre)'],teal:['var(--ctb)','var(--ctd)','var(--ct)'],org:['var(--cob)','var(--cod)','var(--co)']};
+
+var P=[
+{id:1,t:'Self-Reflection & Emotional Processing',d:'The most well-researched techniques for understanding your inner world.',r:'1–7',c:'v'},
+{id:2,t:'Growth & Goal-Oriented',d:'Accelerate learning, achieve goals, develop as a person.',r:'8–14',c:'e'},
+{id:3,t:'Lifestyle & Specialized',d:'Journaling applied to nature, travel, food, fitness, money, relationships.',r:'15–21',c:'a'},
+{id:4,t:'Life Stage & Identity',d:'Parenting, pregnancy, legacy, recovery, inner child work.',r:'22–26',c:'rose'},
+{id:5,t:'Professional & Academic',d:'Career, learning, entrepreneurship, project management.',r:'27–30',c:'sky'},
+{id:6,t:'Spiritual & Philosophical',d:'Meaning, purpose, faith, and the inner life through writing.',r:'31–34',c:'pur'},
+{id:7,t:'Therapeutic & Healing',d:'CBT, DBT, healing journals, mindfulness-based approaches.',r:'35–38',c:'red'},
+{id:8,t:'Creative & Experimental',d:'Photo, junk journals, mind maps, lists, mixed-media approaches.',r:'39–44',c:'teal'},
+{id:9,t:'Hobby & Special Interest',d:'Reading, ideas, gardens, health tracking — practices you already love.',r:'45–48',c:'org'}
+];
+
+var T=[
+[1,'Gratitude Journaling','Write 3-5 specific things you\'re grateful for. Specificity produces strongest results.','One of the most studied techniques. Generic entries like "grateful for family" produce weaker results than specific ones like "colleague covered for me." Research shows once or twice a week beats rushed daily entries. Better to write three things with real feeling than rush through five without feeling them.',['Anxiety','Depression','Optimism'],['What small thing happened today that you almost missed being grateful for?','What opportunity do you have right now that you take for granted?'],'https://i.pinimg.com/736x/49/53/20/49532083572c937cf2c2746c4b5cfb12.jpg'],
+[2,'Morning Pages','Three pages of stream-of-consciousness writing every morning before anything else.','Created by Julia Cameron. No rules — complain, daydream, worry, repeat yourself. The goal is to empty your mental inbox so what remains is clearer, calmer, more creative. Bypasses the inner critic that shuts down new ideas.',['Writers','Artists','Overthinkers'],['Use A4 paper. Do it with morning coffee before checking phone. Don\'t reread for the first several weeks.'],'https://i.pinimg.com/736x/49/53/20/49532083572c937cf2c2746c4b5cfb12.jpg'],
+[3,'Bullet Journaling','Rapid-logging system for tasks, notes, events, habit trackers — every journal unique.','Developed by Ryder Carroll. Bridges organization and self-reflection. Build monthly logs, weekly spreads, habit trackers, collection pages. Popular among people who find traditional journaling too unstructured.',['Productivity','ADHD','Habit Building']],
+[4,'Stream of Consciousness','Write exactly what\'s in your mind — no editing, no pausing. The pen never stops.','Pure unfiltered output. Related to Morning Pages but any time, any duration. If you run out of thoughts, write "I don\'t know what to say" until something surfaces. Works especially when emotionally activated.',['Emotion Processing','Creative Blocks','Self-Discovery']],
+[5,'Expressive Writing','Most scientifically backed — 15-20 min for 3-4 days about deepest feelings on a difficult experience.','Developed by Dr. Pennebaker. Studies show fewer doctor visits, improved immunity, faster healing, reduced anxiety and PTSD. Can feel uncomfortable initially but better in following days.',['Trauma','Grief','PTSD'],['Works best alongside professional support for severe trauma.'],'https://i.pinimg.com/1200x/ae/02/ac/ae02ac95c816368594d3ef556ffbc451.jpg'],
+[6,'Dream Journaling','Record dreams immediately upon waking. Patterns reveal subconscious preoccupations.','Within five minutes most dreams fade — keep notebook by bed. Don\'t need to interpret every dream. Patterns emerge revealing preoccupations, fears, desires your waking mind may not acknowledge.',['Creatives','Subconscious','Nightmares']],
+[7,'Shadow Work Journaling','Explore repressed, denied, or hidden parts of yourself. Goal is integration, not punishment.','Based on Carl Jung. Requires uncomfortable honesty — examine why certain people trigger strong reactions, explore moments when you acted against your values. Reports of greater self-compassion and healthier relationships.',['Deep Self-Discovery','Relationships','Limiting Beliefs'],['What qualities in others bother you most? What does that reveal about you?'],'https://i.pinimg.com/736x/49/53/20/49532083572c937cf2c2746c4b5cfb12.jpg'],
+[8,'Manifestation & Vision','Write about goals as though already achieved. 42% more likely to achieve written goals.','Rooted in goal-setting research. Create detailed descriptions of ideal life. Some combine with drawings, cutouts, color coding. Written goals engage your brain differently than unwritten ones.',['Goal Setting','Career','Self-Confidence']],
+[9,'Reflective Journaling','Review experiences and draw insights. Converts raw experience into genuine understanding.','Ask: What did this teach me? How did I handle it? What would I do differently? Used extensively in education and professional settings to accelerate learning.',['Professionals','Students','Life Transitions']],
+[10,'The Five Whys','Ask "Why?" five times. By the 4th-5th, you arrive at core fears and unmet needs.','From manufacturing. First two produce surface answers. By fourth-fifth you often arrive at something not consciously acknowledged — a core fear or unmet need.',['Problem-Solving','Anxiety','Root Cause']],
+[11,'Art Journaling','Combine writing with visual expression. No artistic skill needed.','Drawing, painting, collage, watercolor, stickers. Words optional. Expresses what words cannot capture. Removes pressure of coherent writing. Most powerful pages are often the messiest.',['Visual Thinkers','Writing-Averse','Emotional Processing']],
+[12,'Prompted Journaling','Respond to specific questions instead of facing a blank page.','From "What\'s on my mind?" to deeply specific exploratory prompts. Quality of prompt directly influences quality of insight. Ideal for beginners.',['Beginners','Feeling Stuck','Specific Exploration']],
+[13,'Unsent Letter Writing','Write to someone you\'ll never send it to. Complete freedom to be honest.','To someone who hurt you, someone you miss, your younger self, future self, even abstract concepts like grief. Most emotionally powerful and underused technique.',['Grief','Anger','Forgiveness','Loss']],
+[14,'Daily Review','5-15 min end-of-day: one thing well, one challenge, one lesson, one intention.','From Benjamin Franklin to Oprah — compounding returns on minimal time. Becomes a detailed map of patterns, growth, and progress.',['Busy People','Goal Trackers','Sustainability']],
+[15,'Nature Journaling','Record observations of the natural world. Close attention is mindfulness.','Birds, light, seasons, bark texture. May include sketches. Reduces anxiety and restores mental energy through focused observation in natural settings.',['Stress Relief','Mindfulness','Screen Fatigue']],
+[16,'Travel Journaling','Preserves not what you saw but how you felt. Sensory details stay alive in writing.','The smell of a market, rain on a roof, light across ruins. Write at end of each day. Many incorporate mementos — tickets, receipts, pressed flowers.',['Travelers','Memory','Self-Discovery'],['What moment today would you want to remember in twenty years?','Describe this place through all five senses.']],
+[17,'Food & Nutrition','Most research-backed behavioral change tool. Explore emotional relationship with eating.','Track what you eat and explore when you reach for food that isn\'t hunger. What moods trigger certain patterns? Recipe journals document tried and modified recipes.',['Health Goals','Mindful Eating','Recipes']],
+[18,'Fitness & Workout','Track workouts, energy, recovery, mental state. Creates data to train intelligently.','Not just exercises but how your body felt, energy level, mental state. Patterns emerge about best conditions and undermining habits. Concrete progress is antidote to plateau frustration.',['Athletes','Fitness Goals','Injury Recovery']],
+[19,'Financial','Most financial problems are psychology problems, not math problems.','Track money but also examine beliefs about spending, emotions driving decisions. Spending tied to emotions: stress, celebration, comfort, fear. A journal surfaces what no budgeting app can address.',['Debt Recovery','Saving','Money Psychology'],['What was the first money lesson you learned as a child?','Write about your last impulse purchase — what emotion preceded it?']],
+[20,'Relationship','Understand your own role and patterns — not venting about others.','Focus on your reactions, needs, communication patterns. Often reveals the common thread is an unmet need you bring to each relationship.',['Communication','Breakup Healing','Attachment Patterns'],['What do you need most that you have difficulty asking for?']],
+[21,'Couples Journaling','Partners write to each other in a shared journal. Structured alternative to difficult talks.','Writing gives time to think, removes heat of confrontation, creates record of appreciation and intentions. Many use it for daily gratitude.',['Couples','Long-Distance','Difficult Conversations']],
+[22,'Parenting & Family','Captures first words, milestones, your own growth as a parent. A precious gift.','Not just for children\'s memories — reflective space for the parent. Process challenges, examine how your own childhood shapes your parenting. Some write directly to their child in second person.',['New Parents','Memory','Parental Healing']],
+[23,'Pregnancy & Motherhood','Weekly entries on physical changes, emotions, fears, hopes, becoming a parent.','Pregnancy brings up identity questions, relationship reflections, values — all benefiting from reflective space. Equally valuable for adoptive parents.',['Pregnancy','Postpartum','Fertility']],
+[24,'Legacy & Memory','Written for those who come after — life story, values, lessons. An act of generosity.','The specific texture of a life disappears when undocumented. People in their thirties who lost parents without documented memories become most committed legacy journalers.',['Family History','Grief','Life Arc']],
+[25,'Recovery & Sobriety','Core tool in twelve-step frameworks. Track milestones, explore triggers.','Include tracking milestones, exploring triggers and cravings, processing underlying emotional pain, documenting gratitude. Emotional regulation benefits directly applicable to not reaching for a substance.',['Addiction Recovery','Eating Disorders','Compulsive Behavior']],
+[26,'Inner Child','Write to, from, or about your younger self. Access feelings your adult mind suppresses.','Write a letter to yourself at a specific age from your wiser self. Or write as your inner child in a spontaneous voice. For those whose adult reactions feel disproportionate to current situations.',['Deep Healing','Childhood Trauma','Therapy Complement']],
+[27,'Career & Professional','Reflect on goals, progress, challenges. Produces clarity no pros-and-cons list can.','Especially powerful during transitions. Many senior leaders journal to process decisions, examine leadership behaviors, prepare for difficult conversations.',['Career Transition','Leadership','Workplace']],
+[28,'Academic & Student','Writing about what you learned produces dramatically better retention.','Explain in your own words, connect to prior knowledge, note what confuses you. Used in medical, law, teacher training programs.',['Students','Professionals in Training','Retention']],
+[29,'Entrepreneur & Business','Thinking partner, decision log, creative space, emotional outlet in one.','Captures ideas before they disappear, documents reasoning behind decisions, processes isolation and self-doubt. Many combine business and personal journaling.',['Founders','Freelancers','Side Hustlers']],
+[30,'Project Journaling','Dedicated journal for one project — brainstorming, decisions, progress.','Writers develop characters, designers document concept evolution, scientists note hypotheses. Having all thinking in one place is invaluable.',['Writers','Designers','Researchers','Builders']],
+[31,'Prayer & Spiritual','One of the oldest practices — written prayers, reflections, records of inner experience.','From Augustine to Thomas Merton. Not limited to any tradition. Creates space for meaning, purpose, and inner experience to be honored and explored.',['Spiritual Practice','Faith Exploration','Purpose']],
+[32,'Bible & Scripture','Writing in response to sacred texts transforms passive reading into active dialogue.','What the text clarifies, challenges, raises, and how it speaks to your current life. Extends to Quran, Torah, Bhagavad Gita, Buddhist sutras.',['People of Faith','Deeper Engagement','Any Tradition']],
+[33,'Stoic Journaling','Morning prep, evening review, negative visualization, dichotomy of control, memento mori.','From Marcus Aurelius\'s Meditations — perhaps history\'s most famous journal. Builds philosophical muscle that strengthens under pressure. Applied philosophy in writing.',['Stoic Philosophy','Anxiety','Leadership'],['Write everything that bothered you today. For each: was it within your control?']],
+[34,'Tarot Journaling','Uses card imagery as prompts for self-examination. Works with or without supernatural belief.','The 78-card deck is a symbolic vocabulary of human experience — archetypes of transformation, loss, joy, power, love. Cards serve as a mirror, not a forecast.',['Creative Thinkers','Symbolic Exploration','Unusual Prompts']],
+[35,'CBT Journaling','Identify negative thoughts, examine evidence, replace with balanced perspectives.','Central to CBT: trigger → automatic thought → emotion → evidence for → evidence against → balanced thought → revised emotion. Trains the mind to catch distorted thoughts without writing.',['Anxiety','Depression','Perfectionism'],['Situation → Thought → Emotion (0-100%) → Evidence for → Against → Balanced → Revised emotion.']],
+[36,'DBT Journaling','Supports mindfulness, distress tolerance, emotional regulation, interpersonal effectiveness.','Developed by Marsha Linehan. The diary card is essentially a structured daily journal. Write about applying skills in real situations.',['Emotional Sensitivity','BPD','Overwhelming Emotions']],
+[37,'Healing Journal','Conscious healing process — for illness, chronic pain, trauma, grief, or life disruption.','Track symptoms and treatment, or tell your story at your own pace. Often incorporates gratitude, expressive writing, and letter techniques for slow progress of recovery.',['Chronic Illness','Trauma Recovery','Grief']],
+[38,'Mindfulness Journaling','Focus on what\'s happening right now — body, senses, surroundings, current state.','Begin with body scan, then observe thoughts as weather passing through a sky. Writing slows you enough to notice; mindfulness provides non-judgmental stance for honest writing.',['Being Present','Rumination','Meditation']],
+[39,'Photo Journaling','Select images intentionally and write about their meaning. Camera as journaling tool.','Over time, a richly layered record of what your life looked like AND felt like. Simplified version: one meaningful photo per day with a sentence.',['Visual Thinkers','Photographers','Creative Mindfulness']],
+[40,'Junk & Smash Journaling','Mixed-media with repurposed materials — intentionally imperfect, layered, handmade.','Old book pages, clippings, coffee-stained paper, fabric scraps. Smash: more spontaneous — glue stubs, wrappers, quick entries. Tactile process is deeply relaxing and meditative.',['Tactile Learners','Crafts','Screen-Free']],
+[41,'Mind Mapping','Visual branching diagrams. Non-linear connections sequential writing suppresses.','Core concept at center, branches for themes, sub-branches for associations. Powerful warm-up before longer entries — the map reveals terrain, then writing explores it.',['Visual Thinkers','Complex Decisions','Brainstorming']],
+[42,'One Line a Day','Exactly one sentence per day. Most minimal viable practice.','Captures day\'s essence without time or inspiration. Over months, cumulative record becomes surprisingly rich. James Clear recommends as entry-level habit building.',['Absolute Beginners','Very Little Time','Habit Building']],
+[43,'Two-Column','Opposing perspectives side by side. Seeing both in parallel reduces emotional reactivity.','Fear vs hope, rational vs gut, positive vs negative. When both sides laid out in parallel, brain evaluates with less emotional reactivity.',['Decision-Making','Conflict','Anxiety']],
+[44,'List Journaling','Replace prose with curated lists. Faster, more honest, highly versatile.','Ten things of joy, five fears, twenty goals. Lists are faster, easier to reread, often more honest because format discourages rationalization. Highly versatile.',['Prose Difficulty','Low Pressure','Quick Clarity']],
+[45,'Reading Journal / Commonplace','Personal anthology of wisdom from everything you read. From Marcus Aurelius to da Vinci.','Copy meaningful passages by hand — best way to internalize. Creates personalized intellectual library of everything that shaped your thinking.',['Readers','Writers','Students','Thinkers']],
+[46,'Idea & Creativity','Capture, develop, organize creative ideas. Ideas not written within minutes are gone forever.','Don\'t just store — return, add, cross-reference, challenge. Many prolific creators credit this discipline with significant output.',['Creative Fields','Entrepreneurs','Inventors']],
+[47,'Garden & Seasonal','Track garden life across seasons. Practical record plus reflective nature connection.','What was planted, conditions, what grew, wildlife. Seasonal journaling extends beyond garden — same walk at different times over years creates remarkable record.',['Gardeners','Naturalists','Seasonal Rhythms']],
+[48,'Medical & Health','Track symptoms, medications, appointments. Transforms vague impressions into specific records.','Doctors report patients with detailed journals provide far more useful information. Also serves emotional function — private space to process illness experience.',['Chronic Conditions','New Diagnosis','Recovery','Healthcare']]
+];
+
+function getPart(n){if(n<=7)return P[0];if(n<=14)return P[1];if(n<=21)return P[2];if(n<=26)return P[3];if(n<=30)return P[4];if(n<=34)return P[5];if(n<=38)return P[6];if(n<=44)return P[7];return P[8];}
+function getSub(n){if(n<=5)return'Core Emotional Techniques';if(n<=7)return'Deep Awareness';if(n<=9)return'Vision & Reflection';if(n<=12)return'Problem-Solving & Creative';if(n<=14)return'Daily Practice';if(n<=16)return'Outward World';if(n<=18)return'Body & Health';if(n<=21)return'Money & Relationships';return null;}
+
+var G=document.getElementById('grid');
+var h='',lp=null;
+
+T.forEach(function(t,i){
+  var p=getPart(t[0]);
+  if(p.id!==lp){
+    lp=p.id;
+    var c=CM[p.c];
+    h+='<div class="ph rv"><div class="phb" style="background:'+c[0]+';color:'+c[2]+';border:1px solid '+c[1]+'">Part '+p.id+'</div><h3>'+p.t+'</h3><p>'+p.d+'</p><div class="phl" style="background:linear-gradient(to right,'+c[2]+',transparent)"></div></div>';
+  }
+  var nt=T[i+1];
+  if(nt&&getSub(t[0])!==getSub(nt[0])){
+    var s=getSub(nt[0]);
+    if(s)h+='<div class="sd rv"><div class="sdl"><span>'+s+'</span><span class="sdn"></span></div></div>';
+  }
+  var c=CM[p.c];
+  var imgSlot=t[6]?'<img src="'+t[6]+'" alt="'+t[1]+'" loading="lazy">':'<i data-lucide="image" class="w-8 h-8" style="opacity:.2"></i>';
+  var promptsHTML='';
+  if(t[5]&&t[5].length){
+    var prt=t[5].length===1&&t[5][0].length>50?'Important Note':'Sample Prompts';
+    var prp=t[5].map(function(q){return'<p class="txprp">'+q+'</p>';}).join('');
+    promptsHTML='<div class="txpr"><div class="txprt">'+prt+'</div>'+prp+'</div>';
+  }
+  var allTags=t[4].map(function(b){return'<span class="tg">'+b+'</span>';}).join('');
+  var topTags=t[4].slice(0,3).map(function(b){return'<span class="tg">'+b+'</span>';}).join('');
+  h+='<div class="tc rv" data-i="'+i+'" id="tc-'+i+'"><div class="ta" style="background:linear-gradient(to right,'+c[2]+',transparent)"></div><div class="tb" data-index="'+i+'"><div class="tn">TECHNIQUE '+String(t[0]).padStart(2,'0')+'</div><h3 class="tt">'+t[1]+'</h3><p class="tds">'+t[2]+'</p><div class="tbf">'+topTags+'</div><div class="tarr"><i data-lucide="chevron-down" class="w-4 h-4"></i></div></div><div class="txd"></div><div class="tx" id="tx-'+i+'" style="max-height:0;overflow:hidden"><div class="txi"><p class="txp">'+t[3]+'</p><div class="tximg">'+imgSlot+'</div><div class="txaf">'+allTags+'</div>'+promptsHTML+'</div></div></div>';
+});
+G.innerHTML=h;
+lucide.createIcons();
+
+// ---------- CARD TOGGLE ----------
+var currentlyOpen=null;
+function openCard(idx){var card=document.getElementById('tc-'+idx),body=document.getElementById('tx-'+idx);if(!card||!body)return;card.classList.add('op');body.style.maxHeight=body.scrollHeight+'px';var img=body.querySelector('img');if(img&&!img.complete){img.onload=function(){if(currentlyOpen===idx)body.style.maxHeight=body.scrollHeight+'px';};}}
+function closeCard(idx){var card=document.getElementById('tc-'+idx),body=document.getElementById('tx-'+idx);if(card)card.classList.remove('op');if(body)body.style.maxHeight='0px';}
+var allTb=document.querySelectorAll('#grid .tb');
+for(var i=0;i<allTb.length;i++){(function(idx){allTb[idx].addEventListener('click',function(e){e.stopPropagation();if(currentlyOpen===idx){closeCard(idx);currentlyOpen=null;}else{if(currentlyOpen!==null)closeCard(currentlyOpen);openCard(idx);currentlyOpen=idx;}});})(i);}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&currentlyOpen!==null){closeCard(currentlyOpen);currentlyOpen=null;}});
+
+// ---------- FAQ TOGGLE ----------
+var faqItems=document.querySelectorAll('.faq-item');
+for(var f=0;f<faqItems.length;f++){(function(item){var q=item.querySelector('.faq-q'),a=item.querySelector('.faq-a'),icon=q.querySelector('[data-lucide]'),open=false;q.addEventListener('click',function(){if(open){a.style.maxHeight='0px';icon.style.transform='rotate(0)';q.style.background='';}else{a.style.maxHeight=a.scrollHeight+'px';icon.style.transform='rotate(45deg)';q.style.background='var(--glh)';}open=!open;});})(faqItems[f]);}
+
+// Footer
+document.getElementById('ft').innerHTML='<div class="max-w-6xl mx-auto px-6 pt-16 pb-8"><div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12"><div class="col-span-2 md:col-span-1"><div class="flex items-center gap-2.5 mb-5"><div class="w-7 h-7 rounded-full flex items-center justify-center" style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25)"><div class="w-2 h-2 rounded-full" style="background:var(--cv)"></div></div><span class="text-sm font-medium" style="color:var(--fth)">Journaling Techniques</span></div><p class="text-sm font-light leading-relaxed" style="color:var(--ftt)">The complete guide to every method that actually works. Backed by research.</p><div class="flex items-center gap-3 mt-6"><a href="#" class="fi"><i data-lucide="twitter" class="w-4 h-4"></i></a><a href="#" class="fi"><i data-lucide="instagram" class="w-4 h-4"></i></a><a href="#" class="fi"><i data-lucide="linkedin" class="w-4 h-4"></i></a><a href="#" class="fi"><i data-lucide="youtube" class="w-4 h-4"></i></a></div></div><div><h4 class="fh">Techniques</h4>'+P.map(function(p){return'<a href="#types" class="fl">Part '+p.id+': '+p.t+' <span style="opacity:.4">('+p.r+')</span></a>';}).join('')+'</div><div><h4 class="fh">Resources</h4><a href="#benefits" class="fl">Benefits of Journaling</a><a href="#stats" class="fl">Research & Studies</a><a href="#mental" class="fl">Mental Health</a><a href="#physical" class="fl">Physical Health</a><a href="#cognitive" class="fl">Cognitive Benefits</a><a href="#guide" class="fl">Getting Started</a></div><div><h4 class="fh">Connect</h4><a href="#" class="fl">About Us</a><a href="#" class="fl">Contact</a><a href="#" class="fl">Newsletter</a><a href="#" class="fl">Privacy Policy</a><a href="#" class="fl">Terms of Use</a></div></div><div class="ftbt flex flex-col md:flex-row items-center justify-between gap-4"><p class="text-xs font-light" style="color:var(--ftt)">&copy; 2026 journalingtechniques.com — All research cited with original sources.</p><div class="flex items-center gap-1.5"><span class="text-xs font-light" style="color:var(--ftt)">Made with</span><i data-lucide="heart" class="w-3 h-3" style="color:var(--cr);fill:var(--cr)"></i><span class="text-xs font-light" style="color:var(--ftt)">for journalers everywhere</span></div></div></div>';
+lucide.createIcons();
+
+// Scroll reveal + counters
+var ro=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('v');});},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(function(e){ro.observe(e);});
+var co=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){var el=x.target;if(el.dataset.a)return;el.dataset.a='1';var t=parseFloat(el.dataset.target),s=el.dataset.suffix||'',d=t%1!==0,st=performance.now();(function u(n){var p=Math.min((n-st)/2000,1),ea=1-Math.pow(1-p,3);el.textContent=(d?(ea*t).toFixed(1):Math.round(ea*t))+s;if(p<1)requestAnimationFrame(u);})(st);}});},{threshold:.5});
+document.querySelectorAll('.sn').forEach(function(e){co.observe(e);});
+window.addEventListener('scroll',function(){NV.style.background=window.scrollY>100?'var(--bgns)':'var(--bgn)';},{passive:true});
+</script>
 </body>
 </html>
